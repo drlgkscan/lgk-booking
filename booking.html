@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Book Appointment – Dr. L G Krishna Ultrasound Clinic</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--g1:#1a5c3a;--g2:#2d7a50;--g3:#e8f5ee;--gold:#b8860b;--red:#c0392b;--amber:#f59e0b;--gray:#6b7280;--text:#14291e;--shadow:0 4px 20px rgba(26,92,58,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#eef7f2;color:var(--text);min-height:100vh}
+.hdr{background:var(--g1);color:#fff;padding:22px 20px 18px;text-align:center;position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;width:180px;height:180px;top:-60px;right:-40px;border-radius:50%;background:rgba(255,255,255,.04)}
+.hdr-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700}
+.hdr-sub{font-size:11px;opacity:.75;letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
+.hdr-info{margin-top:9px;font-size:12.5px;opacity:.85;font-weight:500}
+.stepper{background:#fff;padding:13px 10px;display:flex;justify-content:center;align-items:center;border-bottom:1px solid #d1fae5;box-shadow:0 2px 8px rgba(0,0,0,.04);position:sticky;top:0;z-index:100;overflow-x:auto}
+.sp{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.sc{width:26px;height:26px;border-radius:50%;background:#f3f4f6;border:2px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#9ca3af;transition:all .3s;flex-shrink:0}
+.sl{font-size:11px;color:#9ca3af;font-weight:600;white-space:nowrap}
+.scon{width:24px;height:2px;background:#e5e7eb;margin:0 2px;flex-shrink:0;transition:background .3s}
+.sp.active .sc{background:var(--g1);border-color:var(--g1);color:#fff}
+.sp.active .sl{color:var(--g1)}
+.sp.done .sc{background:var(--g2);border-color:var(--g2);color:#fff}
+.sp.done+.scon,.scon.done{background:var(--g2)}
+.main{max-width:620px;margin:0 auto;padding:20px 14px 60px}
+.panel{display:none}.panel.active{display:block}
+.card{background:#fff;border-radius:18px;padding:22px;box-shadow:var(--shadow);margin-bottom:14px;border:1px solid rgba(26,92,58,.06)}
+.ctitle{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--g1);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.cicon{width:34px;height:34px;background:var(--g3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.fr{margin-bottom:14px}
+.fr.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:12.5px;font-weight:700;color:#374151;margin-bottom:5px;letter-spacing:.3px}
+.req{color:var(--red)}
+input,textarea,select{width:100%;padding:11px 13px;border:1.5px solid #d1fae5;border-radius:10px;font-size:14.5px;font-family:'Nunito',sans-serif;color:var(--text);background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;-webkit-appearance:none}
+input:focus,textarea:focus{border-color:var(--g1);box-shadow:0 0 0 3px rgba(26,92,58,.09)}
+input.err,textarea.err{border-color:var(--red)}
+textarea{resize:vertical;min-height:70px}
+.ferr{font-size:11.5px;color:var(--red);margin-top:3px;display:none}
+.ggrp{display:flex;gap:8px}
+.gbtn{flex:1;padding:10px;border:1.5px solid #d1fae5;border-radius:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:700;color:var(--gray);transition:all .2s;user-select:none;font-family:'Nunito',sans-serif}
+.gbtn.sel{border-color:var(--g1);background:var(--g3);color:var(--g1)}
+.schips{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.chip{padding:9px 10px;border:1.5px solid #d1fae5;border-radius:10px;font-size:12.5px;cursor:pointer;transition:all .2s;color:#4b5563;font-weight:600;text-align:center;user-select:none}
+.chip.sel{border-color:var(--g1);background:var(--g3);color:var(--g1)}
+.slot-wrap{margin-top:16px}
+.slot-lbl{font-size:11px;font-weight:700;color:var(--gray);margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px}
+.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.slot{padding:10px 6px;border:1.5px solid #d1fae5;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text);background:#fff;text-align:center;font-family:'Nunito',sans-serif}
+.slot:hover:not(.full){border-color:var(--g2);background:var(--g3)}
+.slot.sel{border-color:var(--g1);background:var(--g1);color:#fff}
+.slot.full{border-color:#f3f4f6;background:#fafafa;color:#d1d5db;cursor:not-allowed;text-decoration:line-through}
+.slot.one{border-color:var(--amber);color:#78350f;background:#fffbeb}
+.slot-av{display:block;font-size:10px;margin-top:2px;opacity:.7}
+.slot-loading{text-align:center;padding:28px;color:var(--gray);font-size:13px}
+.spin{width:26px;height:26px;border:3px solid var(--g3);border-top-color:var(--g1);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.blocked-msg{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;padding:14px;text-align:center;color:var(--red);font-size:13px;margin-top:14px}
+.info-bar{background:var(--g3);border-left:3px solid var(--g1);border-radius:8px;padding:11px 14px;font-size:12.5px;margin-bottom:14px;line-height:1.6}
+.upi-box{background:linear-gradient(135deg,var(--g3),#f0fdf7);border:1.5px solid rgba(26,92,58,.12);border-radius:16px;padding:22px;text-align:center;margin-bottom:18px}
+.upi-amt{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;color:var(--g1);line-height:1}
+.upi-lbl{font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;margin-top:3px}
+#qr-wrap{display:flex;justify-content:center;margin:14px 0}
+#qr-wrap canvas,#qr-wrap img{border-radius:10px;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.10)}
+.upi-id{background:#fff;border-radius:9px;padding:9px 16px;font-size:14px;font-weight:700;color:var(--g1);display:inline-block;border:1.5px solid rgba(26,92,58,.18);cursor:pointer;font-family:'Nunito',sans-serif}
+.copy-hint{font-size:11px;color:var(--gray);margin-top:5px}
+.pay-steps{background:#fff;border-radius:12px;padding:14px;margin-bottom:14px;border:1px solid #d1fae5}
+.pstep{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #f0fdf4;font-size:13px;line-height:1.5}
+.pstep:last-child{border-bottom:none}
+.pnum{width:20px;height:20px;background:var(--g1);color:#fff;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.decl-box{background:#fffbeb;border:1.5px solid #fcd34d;border-radius:12px;padding:14px;font-size:12.5px;line-height:1.7;color:#78350f;margin-bottom:14px}
+.decl-box ol{margin-left:16px}
+.chk-row{display:flex;align-items:flex-start;gap:10px;padding:11px;background:#fff;border-radius:10px;border:1.5px solid #d1fae5;cursor:pointer}
+.chk-row input[type=checkbox]{width:17px;height:17px;flex-shrink:0;margin-top:2px;accent-color:var(--g1);cursor:pointer}
+.chk-row span{font-size:12.5px;line-height:1.5}
+/* WAITING */
+.wait-center{text-align:center;padding:8px 0}
+.wait-icon{font-size:50px;margin-bottom:10px}
+.wait-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--g1);margin-bottom:6px}
+.wait-sub{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:18px}
+.token-pill{display:inline-block;background:var(--g1);color:#fff;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;padding:10px 28px;border-radius:12px;letter-spacing:2px;margin:10px 0 6px;box-shadow:0 6px 20px rgba(26,92,58,.22)}
+.pending-badge{background:#fef3c7;color:#92400e;border:1.5px solid #fcd34d;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;display:inline-block;margin-bottom:16px;letter-spacing:.8px}
+.detail-box{background:var(--g3);border-radius:12px;padding:15px;text-align:left;margin:14px 0;font-size:13px;line-height:2}
+.detail-box strong{color:var(--g1)}
+.txn-row{background:#fff;border:1px solid #d1fae5;border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--gray);margin-top:8px;font-family:monospace}
+.wa-box{background:#dcfce7;border:1.5px solid #86efac;border-radius:12px;padding:14px;margin-top:14px;font-size:13px;color:#14532d;display:flex;align-items:flex-start;gap:10px}
+.wa-icon{font-size:22px;flex-shrink:0}
+/* BUTTONS */
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:all .2s;text-align:center}
+.btn-p{background:var(--g1);color:#fff}
+.btn-p:hover{background:var(--g2);transform:translateY(-1px)}
+.btn-p:disabled{background:#9ca3af;cursor:not-allowed;transform:none}
+.btn-o{background:#fff;color:var(--g1);border:1.5px solid var(--g1)}
+.btn-o:hover{background:var(--g3)}
+.btn-wa{background:#25D366;color:#fff;text-decoration:none;display:block;padding:14px;border-radius:12px;font-size:15px;font-weight:700;text-align:center;font-family:'Nunito',sans-serif}
+.btn-wa:hover{background:#1ebe5d}
+.brow{display:flex;gap:10px;margin-top:14px}
+.brow .btn{flex:1}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a2e1e;color:#fff;padding:11px 20px;border-radius:30px;font-size:13px;z-index:9999;transition:transform .3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:380px){.slot-grid{grid-template-columns:repeat(2,1fr)}.schips,.fr.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-name">Dr. L G Krishna Ultrasound Clinic</div>
+  <div class="hdr-sub">Ultrasound &amp; Doppler Centre · Sirsi, Karnataka</div>
+  <div class="hdr-info">📞 7204764969 &nbsp;·&nbsp; Mon–Sat: 9:30 AM – 5:30 PM</div>
+</div>
+
+<div class="stepper">
+  <div class="sp active" id="sp1"><div class="sc">1</div><span class="sl">Details</span></div>
+  <div class="scon" id="sc1"></div>
+  <div class="sp" id="sp2"><div class="sc">2</div><span class="sl">Slot</span></div>
+  <div class="scon" id="sc2"></div>
+  <div class="sp" id="sp3"><div class="sc">3</div><span class="sl">Payment</span></div>
+  <div class="scon" id="sc3"></div>
+  <div class="sp" id="sp4"><div class="sc">4</div><span class="sl">Done</span></div>
+</div>
+
+<div class="main">
+
+<!-- STEP 1: DETAILS -->
+<div class="panel active" id="step1">
+  <div class="card">
+    <div class="ctitle"><span class="cicon">👤</span>Patient Details</div>
+    <div class="fr">
+      <label>Patient Name <span class="req">*</span></label>
+      <input type="text" id="f-name" placeholder="Full name as on ID"/>
+      <div class="ferr" id="e-name">Please enter patient name</div>
+    </div>
+    <div class="fr two">
+      <div>
+        <label>Age <span class="req">*</span></label>
+        <input type="number" id="f-age" placeholder="Years" min="1" max="120"/>
+        <div class="ferr" id="e-age">Enter valid age</div>
+      </div>
+      <div>
+        <label>Gender <span class="req">*</span></label>
+        <div class="ggrp">
+          <div class="gbtn" onclick="selGender('Male',this)">♂ Male</div>
+          <div class="gbtn" onclick="selGender('Female',this)">♀ Female</div>
+        </div>
+        <input type="hidden" id="f-gender"/>
+        <div class="ferr" id="e-gender">Select gender</div>
+      </div>
+    </div>
+    <div class="fr">
+      <label>Phone Number <span class="req">*</span></label>
+      <input type="tel" id="f-phone" placeholder="10-digit mobile number" maxlength="10"/>
+      <div class="ferr" id="e-phone">Enter valid 10-digit number</div>
+    </div>
+    <div class="fr">
+      <label>Email <span style="font-weight:400;color:var(--gray)">(optional)</span></label>
+      <input type="email" id="f-email" placeholder="for backup token copy"/>
+    </div>
+    <div class="fr">
+      <label>Address <span class="req">*</span></label>
+      <textarea id="f-addr" placeholder="Village / Town, Taluk, District"></textarea>
+      <div class="ferr" id="e-addr">Please enter address</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle"><span class="cicon">🔬</span>Scan Required</div>
+    <label style="margin-bottom:10px">Select scan type <span class="req">*</span></label>
+    <div class="schips">
+      <div class="chip" onclick="selScan(this,'Early Pregnancy (EP)')">Early Pregnancy</div>
+      <div class="chip" onclick="selScan(this,'NT Scan')">NT Scan</div>
+      <div class="chip" onclick="selScan(this,'Anomaly Scan')">Anomaly Scan</div>
+      <div class="chip" onclick="selScan(this,'Growth Scan')">Growth Scan</div>
+      <div class="chip" onclick="selScan(this,'Fetal Echo')">Fetal Echo</div>
+      <div class="chip" onclick="selScan(this,'Anomaly + Echo')">Anomaly + Echo</div>
+      <div class="chip" onclick="selScan(this,'Abdomen &amp; Pelvis')">Abdomen &amp; Pelvis</div>
+      <div class="chip" onclick="selScan(this,'KUB Scan')">KUB Scan</div>
+      <div class="chip" onclick="selScan(this,'Thyroid Scan')">Thyroid Scan</div>
+      <div class="chip" onclick="selScan(this,'Breast Scan')">Breast Scan</div>
+      <div class="chip" onclick="selScan(this,'Scrotum Scan')">Scrotum Scan</div>
+      <div class="chip" onclick="selScan(this,'__other__')">Other…</div>
+    </div>
+    <input type="hidden" id="f-scan"/>
+    <div class="ferr" id="e-scan">Please select scan type</div>
+    <div id="other-wrap" style="display:none;margin-top:8px">
+      <input type="text" id="f-other" placeholder="Describe scan required"/>
+    </div>
+  </div>
+  <button class="btn btn-p" onclick="next1()">Continue to Slot Selection →</button>
+</div>
+
+<!-- STEP 2: SLOT -->
+<div class="panel" id="step2">
+  <div class="card">
+    <div class="ctitle"><span class="cicon">📅</span>Select Date &amp; Time</div>
+    <div class="info-bar">Slots are 30 min each · Max 2 patients per slot · Sundays closed</div>
+    <div class="fr">
+      <label>Appointment Date <span class="req">*</span></label>
+      <input type="date" id="f-date" onchange="loadSlots()"/>
+      <div class="ferr" id="e-date">Please select a date</div>
+    </div>
+    <div id="slots-section"></div>
+    <input type="hidden" id="f-slot"/>
+    <div class="ferr" id="e-slot">Please select a time slot</div>
+  </div>
+  <div class="brow">
+    <button class="btn btn-o" onclick="goStep(1)">← Back</button>
+    <button class="btn btn-p" onclick="next2()">Continue to Payment →</button>
+  </div>
+</div>
+
+<!-- STEP 3: PAYMENT -->
+<div class="panel" id="step3">
+  <div class="card">
+    <div class="ctitle"><span class="cicon">💳</span>Pay Advance</div>
+    <div class="upi-box">
+      <div class="upi-amt">₹500</div>
+      <div class="upi-lbl">Non-refundable advance · UPI only</div>
+      <div id="qr-wrap"></div>
+      <div class="upi-id" onclick="copyUPI()">drsatishscan@upi</div>
+      <div class="copy-hint">Tap to copy UPI ID</div>
+    </div>
+    <div class="pay-steps">
+      <div class="pstep"><div class="pnum">1</div><div>Open <strong>GPay / PhonePe / Paytm</strong> — scan QR or copy UPI ID above.</div></div>
+      <div class="pstep"><div class="pnum">2</div><div>Pay exactly <strong>₹500</strong>. After payment, note the <strong>Transaction ID</strong> (12-digit number).</div></div>
+      <div class="pstep"><div class="pnum">3</div><div>Enter that <strong>Transaction ID</strong> below. This is how we verify your payment.</div></div>
+      <div class="pstep"><div class="pnum">4</div><div>Submit. Your <strong>PDF appointment token will be sent to your WhatsApp</strong> after verification (within 30 min).</div></div>
+    </div>
+    <div class="fr">
+      <label>UPI Transaction ID <span class="req">*</span></label>
+      <input type="text" id="f-txn" placeholder="e.g. 412345678901" maxlength="30"/>
+      <div class="ferr" id="e-txn">Please enter UPI transaction ID</div>
+    </div>
+    <hr style="border:none;border-top:1px solid #d1fae5;margin:14px 0"/>
+    <div class="decl-box">
+      <strong>Declaration – Please read:</strong>
+      <ol style="margin-top:7px">
+        <li>₹500 is advance / part-payment only. Balance scan charges payable at clinic.</li>
+        <li>Regular scan time: 9:30 AM – 5:30 PM. Outside hours attracts extra charges.</li>
+        <li>Time may vary by 30–45 minutes from allotted slot.</li>
+        <li>I will provide genuine identification details.</li>
+        <li>I will comply with all PCPNDT rules and regulations.</li>
+        <li>Advance is non-refundable in case of no-show or last-minute cancellation.</li>
+      </ol>
+    </div>
+    <label class="chk-row">
+      <input type="checkbox" id="f-decl" onchange="chkDecl()"/>
+      <span>I have read and accept all the above terms and conditions.</span>
+    </label>
+    <div class="ferr" id="e-decl">Please accept the declaration</div>
+  </div>
+  <div class="brow">
+    <button class="btn btn-o" onclick="goStep(2)">← Back</button>
+    <button class="btn btn-p" id="submitBtn" onclick="doSubmit()" disabled>Submit Booking →</button>
+  </div>
+</div>
+
+<!-- STEP 4: WAITING CONFIRMATION -->
+<div class="panel" id="step4">
+  <div class="card">
+    <div class="wait-center">
+      <div class="wait-icon">📨</div>
+      <div class="wait-title">Booking Submitted!</div>
+      <div class="wait-sub">Your payment is being verified by the clinic.<br/>Your appointment PDF token will be sent to your WhatsApp.</div>
+      <div style="font-size:12px;color:var(--gray);margin-bottom:6px">Booking Reference</div>
+      <div class="token-pill" id="tok-display">--</div><br/>
+      <div class="pending-badge">⏳ AWAITING PAYMENT VERIFICATION</div>
+    </div>
+    <div class="detail-box" id="detail-box"></div>
+    <div class="txn-row" id="txn-row"></div>
+    <div class="wa-box">
+      <div class="wa-icon">📲</div>
+      <div>Send your <strong>UPI payment screenshot</strong> to WhatsApp <strong><a href="https://wa.me/917204764969" target="_blank" style="color:#14532d">7204764969</a></strong> and mention your booking reference. PDF token will be sent after verification.</div>
+    </div>
+  </div>
+  <a class="btn-wa" id="wa-btn" href="#" target="_blank" style="margin-bottom:10px">
+    📲 Tap Here to Send Screenshot on WhatsApp
+  </a>
+  <div style="font-size:12px;color:var(--gray);text-align:center;margin-top:8px;line-height:1.7;padding:0 10px">
+    PDF token will be sent to your WhatsApp within 30 minutes during clinic hours.<br/>
+    Mon–Sat · 9:30 AM – 5:30 PM · 📞 7204764969
+  </div>
+</div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SCRIPT_URL='YOUR_APPS_SCRIPT_URL_HERE';
+const CLINIC_WA='917204764969';
+const SLOTS=['09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+let cur=1,gender='',scan='',slot='',slotData={},bk={};
+
+function selGender(g,el){gender=g;document.getElementById('f-gender').value=g;document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
+function selScan(el,v){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');if(v==='__other__'){document.getElementById('other-wrap').style.display='block';scan='';document.getElementById('f-scan').value='';}else{document.getElementById('other-wrap').style.display='none';scan=v;document.getElementById('f-scan').value=v;}}
+document.getElementById('f-other').addEventListener('input',function(){scan=this.value.trim();document.getElementById('f-scan').value=scan;});
+
+function loadSlots(){
+  const d=document.getElementById('f-date').value;
+  if(!d)return;
+  const sec=document.getElementById('slots-section');
+  if(new Date(d+'T00:00:00').getDay()===0){sec.innerHTML='<div class="blocked-msg">🚫 Clinic is closed on Sundays. Please choose another date.</div>';slot='';return;}
+  sec.innerHTML='<div class="slot-loading"><div class="spin"></div>Loading slots…</div>';
+  if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE'){setTimeout(()=>{slotData={};renderSlots();},400);return;}
+  fetch(SCRIPT_URL+'?action=slots&date='+d).then(r=>r.json()).then(data=>{
+    if(data.blocked){sec.innerHTML='<div class="blocked-msg">🚫 '+(data.reason||'Clinic not available on this date')+'.<br/>Please choose another date.</div>';return;}
+    slotData=data.slots||{};renderSlots();
+  }).catch(()=>{slotData={};renderSlots();});
+}
+function renderSlots(){
+  const sec=document.getElementById('slots-section');
+  let h='<div class="slot-wrap"><div class="slot-lbl">Available Time Slots</div><div class="slot-grid">';
+  SLOTS.forEach(s=>{
+    const c=slotData[s]||0,av=2-c;
+    let cls='slot',av_t='';
+    if(av<=0){cls+=' full';av_t='<span class="slot-av">Full</span>';}
+    else if(av===1){cls+=' one';av_t='<span class="slot-av">1 left</span>';}
+    else{av_t='<span class="slot-av">Available</span>';}
+    const clk=av>0?`onclick="selSlot('${s}',this)"`:'';
+    h+=`<div class="${cls}" ${clk}>${fmtT(s)}${av_t}</div>`;
+  });
+  sec.innerHTML=h+'</div></div>';
+}
+function fmtT(t){const[h,m]=t.split(':').map(Number),ap=h<12?'AM':'PM',hh=h>12?h-12:h===0?12:h;return`${hh}:${m.toString().padStart(2,'0')} ${ap}`;}
+function selSlot(s,el){if(el.classList.contains('full'))return;slot=s;document.getElementById('f-slot').value=s;document.querySelectorAll('.slot').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
+
+window.addEventListener('load',()=>{
+  const t=new Date(),y=t.getFullYear(),mm=String(t.getMonth()+1).padStart(2,'0'),dd=String(t.getDate()).padStart(2,'0');
+  document.getElementById('f-date').min=`${y}-${mm}-${dd}`;
+  new QRCode(document.getElementById('qr-wrap'),{text:`upi://pay?pa=drsatishscan@upi&pn=Dr%20LGK%20Ultrasound&am=500&cu=INR`,width:170,height:170,colorDark:'#1a5c3a',colorLight:'#ffffff'});
+});
+
+function copyUPI(){navigator.clipboard.writeText('drsatishscan@upi').then(()=>showToast('UPI ID copied!'));}
+function chkDecl(){document.getElementById('submitBtn').disabled=!document.getElementById('f-decl').checked;}
+
+function validate1(){
+  let ok=true;
+  [{id:'f-name',eid:'e-name',fn:v=>v.trim().length>=2},{id:'f-age',eid:'e-age',fn:v=>v&&+v>0&&+v<121},{id:'f-phone',eid:'e-phone',fn:v=>/^\d{10}$/.test(v.trim())},{id:'f-addr',eid:'e-addr',fn:v=>v.trim().length>=5}].forEach(f=>{
+    const el=document.getElementById(f.id),er=document.getElementById(f.eid);
+    if(!f.fn(el.value)){el.classList.add('err');er.style.display='block';ok=false;}else{el.classList.remove('err');er.style.display='none';}
+  });
+  if(!gender){document.getElementById('e-gender').style.display='block';ok=false;}else document.getElementById('e-gender').style.display='none';
+  if(!scan.trim()){document.getElementById('e-scan').style.display='block';ok=false;}else document.getElementById('e-scan').style.display='none';
+  return ok;
+}
+function validate2(){
+  let ok=true;
+  if(!document.getElementById('f-date').value){document.getElementById('e-date').style.display='block';ok=false;}else document.getElementById('e-date').style.display='none';
+  if(!slot){document.getElementById('e-slot').style.display='block';ok=false;}else document.getElementById('e-slot').style.display='none';
+  return ok;
+}
+function goStep(n){document.getElementById('step'+cur).classList.remove('active');cur=n;document.getElementById('step'+n).classList.add('active');updStepper();window.scrollTo({top:0,behavior:'smooth'});}
+function next1(){if(validate1())goStep(2);}
+function next2(){if(validate2())goStep(3);}
+function updStepper(){
+  for(let i=1;i<=4;i++){const el=document.getElementById('sp'+i);el.classList.remove('active','done');if(i<cur)el.classList.add('done');else if(i===cur)el.classList.add('active');if(i<4)document.getElementById('sc'+i).style.background=i<cur?'var(--g2)':'#e5e7eb';}
+}
+function mkToken(){return'LGK-'+document.getElementById('f-date').value.replace(/-/g,'')+'-'+String(Math.floor(Math.random()*900)+100);}
+function doSubmit(){
+  const txn=document.getElementById('f-txn').value.trim();
+  if(!txn){document.getElementById('e-txn').style.display='block';return;}
+  document.getElementById('e-txn').style.display='none';
+  const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Submitting…';
+  const token=mkToken(),dateStr=document.getElementById('f-date').value;
+  bk={token,name:document.getElementById('f-name').value.trim(),age:document.getElementById('f-age').value,gender,phone:document.getElementById('f-phone').value.trim(),email:document.getElementById('f-email').value.trim(),address:document.getElementById('f-addr').value.trim(),scan,date:dateStr,slot,slotDisplay:fmtT(slot),upiTxn:txn,advance:500,status:'PENDING',submittedAt:new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})};
+  if(SCRIPT_URL!=='YOUR_APPS_SCRIPT_URL_HERE'){fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(bk)}).catch(()=>{});}
+  const dfmt=new Date(dateStr+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('tok-display').textContent=token;
+  document.getElementById('detail-box').innerHTML=`<div><strong>Patient:</strong> ${bk.name}</div><div><strong>Age / Gender:</strong> ${bk.age} yrs · ${bk.gender}</div><div><strong>Phone:</strong> ${bk.phone}</div><div><strong>Scan:</strong> ${bk.scan}</div><div><strong>Date:</strong> ${dfmt}</div><div><strong>Time Slot:</strong> ${bk.slotDisplay}</div>`;
+  document.getElementById('txn-row').textContent='UPI Transaction ID: '+txn;
+  const msg=encodeURIComponent(`Hi Dr. Satish,\n\nI booked an appointment at Dr. LGK Ultrasound Clinic.\n\nToken: ${token}\nName: ${bk.name}\nScan: ${bk.scan}\nDate: ${dfmt}\nTime: ${bk.slotDisplay}\nUPI Txn ID: ${txn}\nAmount: ₹500\n\nAttaching payment screenshot. Please confirm and send PDF token. 🙏`);
+  document.getElementById('wa-btn').href=`https://wa.me/${CLINIC_WA}?text=${msg}`;
+  goStep(4);
+}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+</script>
+</body>
+</html>
