@@ -257,28 +257,22 @@ function selectDay(ds){
 function loadData(){
   document.getElementById('bookingsList').innerHTML='<div class="loading"><div class="spin"></div>Loading…</div>';
   if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE'){
-    // Demo data
-    allBookings=getDemoBookings();
-    blockedDates=[];
-    calcWeekCounts();
-    buildWeekStrip();
-    renderDay();
-    return;
+    allBookings=getDemoBookings();blockedDates=[];calcWeekCounts();buildWeekStrip();renderDay();return;
   }
-  fetch(SCRIPT_URL+'?action=all').then(r=>r.json()).then(data=>{
-    allBookings=data.bookings||[];
-    blockedDates=data.blocked||[];
-    calcWeekCounts();
-    buildWeekStrip();
-    renderDay();
-  }).catch(()=>{
-    allBookings=getDemoBookings();
-    blockedDates=[];
-    calcWeekCounts();
-    buildWeekStrip();
-    renderDay();
-    showToast('Using demo data — connect Apps Script');
-  });
+  fetch(SCRIPT_URL+'?action=all')
+    .then(r=>r.text())
+    .then(text=>{
+      try{
+        const data=JSON.parse(text);
+        allBookings=data.bookings||[];
+        blockedDates=data.blocked||[];
+        calcWeekCounts();buildWeekStrip();renderDay();
+      }catch(e){
+        document.getElementById('bookingsList').innerHTML='<div class="empty-day">⚠️ Data parse error. Try redeploying Apps Script.</div>';
+      }
+    }).catch(err=>{
+      document.getElementById('bookingsList').innerHTML='<div class="empty-day">⚠️ Cannot reach Apps Script.<br/><small>Make sure it is deployed with <b>Anyone</b> access and redeploy as new version.</small></div>';
+    });
 }
 
 function calcWeekCounts(){
