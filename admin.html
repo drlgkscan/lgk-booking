@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin – Dr. LGK Clinic</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--g1:#1a5c3a;--g2:#2d7a50;--g3:#e8f5ee;--gold:#b8860b;--red:#c0392b;--amber:#f59e0b;--gray:#6b7280;--text:#14291e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#0f1f16;color:#fff;min-height:100vh}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#0f1f16,#1a3326)}
+.login-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:20px;padding:36px 28px;width:100%;max-width:360px;text-align:center;backdrop-filter:blur(10px)}
+.login-icon{font-size:40px;margin-bottom:12px}
+.login-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
+.login-sub{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:24px}
+.login-box input{width:100%;padding:13px 16px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:12px;font-size:16px;color:#fff;font-family:'Nunito',sans-serif;outline:none;text-align:center;letter-spacing:4px;margin-bottom:14px}
+.login-box input::placeholder{letter-spacing:0;color:rgba(255,255,255,.35)}
+.login-box input:focus{border-color:var(--g2);box-shadow:0 0 0 3px rgba(45,122,80,.25)}
+.login-err{color:#f87171;font-size:13px;margin-bottom:10px;display:none}
+.btn-login{width:100%;padding:13px;background:var(--g1);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:background .2s}
+.btn-login:hover{background:var(--g2)}
+
+/* MAIN ADMIN */
+.admin-wrap{display:none;min-height:100vh;background:#f0f7f3}
+.adm-hdr{background:var(--g1);color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.adm-hdr-left{font-family:'Playfair Display',serif;font-size:18px;font-weight:700}
+.adm-hdr-sub{font-size:11px;opacity:.7;letter-spacing:1px;text-transform:uppercase}
+.btn-logout{background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Nunito',sans-serif}
+.btn-logout:hover{background:rgba(255,255,255,.25)}
+.adm-body{max-width:800px;margin:0 auto;padding:20px 14px 60px}
+
+/* WEEK STRIP */
+.week-strip{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 16px rgba(26,92,58,.08);margin-bottom:18px;border:1px solid rgba(26,92,58,.06)}
+.week-title{font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+.week-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.wday{padding:10px 4px;border-radius:10px;text-align:center;cursor:pointer;border:1.5px solid #e5e7eb;transition:all .2s;position:relative}
+.wday.active{border-color:var(--g1);background:var(--g3)}
+.wday.today{background:var(--g1);color:#fff;border-color:var(--g1)}
+.wday.today .wd-name,.wday.today .wd-num,.wday.today .wd-ct{color:#fff!important;opacity:1}
+.wday.blocked{background:#fef2f2;border-color:#fca5a5}
+.wday.sunday{background:#f9fafb;border-color:#f3f4f6;cursor:not-allowed}
+.wd-name{font-size:10px;font-weight:600;color:var(--gray);letter-spacing:.5px;text-transform:uppercase}
+.wd-num{font-size:16px;font-weight:700;color:var(--text);margin:2px 0}
+.wd-ct{font-size:11px;font-weight:600;color:var(--g2)}
+.wday.sunday .wd-ct{color:#d1d5db}
+.wday.blocked .wd-ct{color:var(--red)}
+
+/* CONTROLS BAR */
+.ctrl-bar{background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 4px 16px rgba(26,92,58,.08);margin-bottom:16px;border:1px solid rgba(26,92,58,.06);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ctrl-date{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--g1);flex:1;min-width:180px}
+.ctrl-count{font-size:13px;color:var(--gray);font-weight:500}
+.count-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-left:6px}
+.badge-pending{background:#fef3c7;color:#92400e}
+.badge-confirmed{background:#d1fae5;color:#065f46}
+.btn-block{background:#fef2f2;color:var(--red);border:1.5px solid #fca5a5;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif}
+.btn-block:hover{background:#fee2e2}
+.btn-unblock{background:#d1fae5;color:#065f46;border:1.5px solid #86efac;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif}
+
+/* BOOKING CARDS */
+.slot-section{margin-bottom:6px}
+.slot-header{font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.8px;padding:8px 4px;display:flex;align-items:center;gap:8px}
+.slot-line{flex:1;height:1px;background:#e5e7eb}
+.bk-card{background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(26,92,58,.07);margin-bottom:8px;border:1px solid rgba(26,92,58,.06);border-left:4px solid var(--border-col,#d1d5db);transition:box-shadow .2s}
+.bk-card.pending{--border-col:#fcd34d}
+.bk-card.confirmed{--border-col:var(--g2)}
+.bk-card.cancelled{--border-col:#fca5a5;opacity:.6}
+.bk-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.bk-name{font-size:15px;font-weight:700;color:var(--text)}
+.bk-scan{font-size:12.5px;color:var(--g1);font-weight:600;margin-top:2px}
+.bk-status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.s-pending{background:#fef3c7;color:#92400e}
+.s-confirmed{background:#d1fae5;color:#065f46}
+.s-cancelled{background:#fee2e2;color:#991b1b}
+.bk-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--gray);margin-bottom:10px}
+.bk-meta span{display:flex;align-items:center;gap:4px}
+.txn-chip{background:#f3f4f6;border-radius:8px;padding:5px 10px;font-size:12px;font-family:monospace;color:#374151;margin-bottom:10px;display:inline-block;letter-spacing:.5px}
+.bk-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-confirm{background:var(--g1);color:#fff;border:none;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:flex;align-items:center;gap:6px;transition:background .2s}
+.btn-confirm:hover{background:var(--g2)}
+.btn-cancel{background:#fef2f2;color:var(--red);border:1.5px solid #fca5a5;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif}
+.btn-wa{background:#25D366;color:#fff;border:none;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-wa:hover{background:#1ebe5d}
+.empty-day{text-align:center;padding:36px;color:var(--gray);font-size:14px;background:#fff;border-radius:14px;border:1.5px dashed #d1fae5}
+
+/* BLOCK MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--g1);margin-bottom:16px}
+.modal input,.modal textarea{width:100%;padding:11px 13px;border:1.5px solid #d1fae5;border-radius:10px;font-size:14px;font-family:'Nunito',sans-serif;color:var(--text);outline:none;margin-bottom:10px}
+.modal input:focus,.modal textarea:focus{border-color:var(--g1)}
+.modal-btns{display:flex;gap:10px;margin-top:6px}
+.modal-btns button{flex:1;padding:11px;border-radius:10px;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;border:none}
+.m-cancel{background:#f3f4f6;color:var(--gray)}
+.m-block{background:var(--red);color:#fff}
+
+/* LOADING */
+.loading{text-align:center;padding:40px;color:var(--gray)}
+.spin{width:28px;height:28px;border:3px solid #d1fae5;border-top-color:var(--g1);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a2e1e;color:#fff;padding:11px 20px;border-radius:30px;font-size:13px;z-index:9999;transition:transform .3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(max-width:480px){.week-days{grid-template-columns:repeat(7,1fr)}.wd-name{font-size:9px}.wd-num{font-size:14px}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-icon">🏥</div>
+    <div class="login-title">Clinic Admin</div>
+    <div class="login-sub">Dr. L G Krishna Ultrasound Clinic</div>
+    <input type="password" id="pwInput" placeholder="Enter PIN" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <div class="login-err" id="loginErr">Incorrect PIN. Try again.</div>
+    <button class="btn-login" onclick="doLogin()">Login →</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="adminWrap">
+  <div class="adm-hdr">
+    <div>
+      <div class="adm-hdr-left">🏥 Clinic Admin Dashboard</div>
+      <div class="adm-hdr-sub">Dr. L G Krishna Ultrasound Clinic · Sirsi</div>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Logout</button>
+  </div>
+
+  <div class="adm-body">
+    <!-- WEEK STRIP -->
+    <div class="week-strip">
+      <div class="week-title">📅 This Week at a Glance</div>
+      <div class="week-days" id="weekDays"></div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="ctrl-bar">
+      <div>
+        <div class="ctrl-date" id="viewDateLabel">Today</div>
+        <div class="ctrl-count" id="viewCount"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-block" id="blockBtn" onclick="openBlockModal()">🚫 Block Date</button>
+        <button class="btn-unblock" id="unblockBtn" onclick="unblockDate()" style="display:none">✅ Unblock</button>
+      </div>
+    </div>
+
+    <!-- BOOKINGS LIST -->
+    <div id="bookingsList"></div>
+  </div>
+</div>
+
+<!-- BLOCK MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-title">🚫 Block Date</div>
+    <div style="font-size:13px;color:var(--gray);margin-bottom:12px">Patients will not be able to book on this date.</div>
+    <input type="text" id="blockReason" placeholder="Reason (e.g. Vacation, Holiday)" maxlength="80"/>
+    <div id="blockDateRange" style="margin-bottom:10px;font-size:13px;color:var(--g1);font-weight:600"></div>
+    <div class="modal-btns">
+      <button class="m-cancel" onclick="closeModal()">Cancel</button>
+      <button class="m-block" onclick="doBlock()">Block Date</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyg-2EA3yOYJSNmz1wNIrbUoj3CmkYABsUx-F6zzLDT0G9Gpa_TE9XQHtgWYc23D7NK/exec';
+const ADMIN_PIN  = '1234';   // ← Change this to your preferred PIN
+const CLINIC_WA  = '917204764969';
+const SLOTS = ['09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+// ─────────────────────────────────────────────────────────
+
+let viewDate = todayStr();
+let allBookings = [];
+let blockedDates = [];
+let weekCounts = {};
+
+// ── AUTH ──────────────────────────────────────────────────
+function doLogin(){
+  const pw=document.getElementById('pwInput').value;
+  if(pw===ADMIN_PIN){
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('adminWrap').style.display='block';
+    init();
+  } else {
+    document.getElementById('loginErr').style.display='block';
+    document.getElementById('pwInput').value='';
+  }
+}
+function doLogout(){document.getElementById('adminWrap').style.display='none';document.getElementById('loginWrap').style.display='flex';document.getElementById('pwInput').value='';}
+
+// ── DATE UTILS ────────────────────────────────────────────
+function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function dateLabel(s){return new Date(s+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});}
+function shortDay(s){return new Date(s+'T00:00:00').toLocaleDateString('en-IN',{weekday:'short'}).slice(0,3);}
+function dayNum(s){return new Date(s+'T00:00:00').getDate();}
+function addDays(s,n){const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function fmtT(t){const[h,m]=t.split(':').map(Number),ap=h<12?'AM':'PM',hh=h>12?h-12:h===0?12:h;return`${hh}:${m.toString().padStart(2,'0')} ${ap}`;}
+
+// ── INIT ──────────────────────────────────────────────────
+function init(){
+  viewDate=todayStr();
+  buildWeekStrip();
+  loadData();
+}
+
+function buildWeekStrip(){
+  const con=document.getElementById('weekDays');
+  con.innerHTML='';
+  const today=todayStr();
+  // Find Monday of current week
+  const d=new Date(today+'T00:00:00');
+  const dow=d.getDay();
+  const mon=new Date(d);mon.setDate(d.getDate()-(dow===0?6:dow-1));
+  for(let i=0;i<7;i++){
+    const dd=new Date(mon);dd.setDate(mon.getDate()+i);
+    const ds=`${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}-${String(dd.getDate()).padStart(2,'0')}`;
+    const isSun=dd.getDay()===0;
+    const isToday=ds===today;
+    const isView=ds===viewDate;
+    const isBlocked=blockedDates.includes(ds);
+    const cnt=weekCounts[ds]||0;
+    let cls='wday';
+    if(isToday)cls+=' today';
+    else if(isView)cls+=' active';
+    if(isSun)cls+=' sunday';
+    if(isBlocked&&!isSun)cls+=' blocked';
+    const dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const ct=isSun?'Closed':isBlocked?'Blocked':(cnt>0?`${cnt} pt${cnt>1?'s':''}`:'Free');
+    con.innerHTML+=`<div class="${cls}" onclick="${isSun?'':''}`+"selectDay('"+ds+"')"+`">
+      <div class="wd-name">${dn[dd.getDay()]}</div>
+      <div class="wd-num">${dd.getDate()}</div>
+      <div class="wd-ct">${ct}</div>
+    </div>`;
+  }
+}
+
+function selectDay(ds){
+  viewDate=ds;
+  buildWeekStrip();
+  renderDay();
+}
+
+// ── LOAD DATA ─────────────────────────────────────────────
+function loadData(){
+  document.getElementById('bookingsList').innerHTML='<div class="loading"><div class="spin"></div>Loading…</div>';
+  if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE'){
+    // Demo data
+    allBookings=getDemoBookings();
+    blockedDates=[];
+    calcWeekCounts();
+    buildWeekStrip();
+    renderDay();
+    return;
+  }
+  fetch(SCRIPT_URL+'?action=all').then(r=>r.json()).then(data=>{
+    allBookings=data.bookings||[];
+    blockedDates=data.blocked||[];
+    calcWeekCounts();
+    buildWeekStrip();
+    renderDay();
+  }).catch(()=>{
+    allBookings=getDemoBookings();
+    blockedDates=[];
+    calcWeekCounts();
+    buildWeekStrip();
+    renderDay();
+    showToast('Using demo data — connect Apps Script');
+  });
+}
+
+function calcWeekCounts(){
+  weekCounts={};
+  allBookings.filter(b=>b.status!=='CANCELLED').forEach(b=>{
+    weekCounts[b.date]=(weekCounts[b.date]||0)+1;
+  });
+}
+
+// ── RENDER DAY ────────────────────────────────────────────
+function renderDay(){
+  const lbl=document.getElementById('viewDateLabel');
+  const today=todayStr();
+  if(viewDate===today)lbl.textContent='Today — '+dateLabel(viewDate);
+  else if(viewDate===addDays(today,1))lbl.textContent='Tomorrow — '+dateLabel(viewDate);
+  else lbl.textContent=dateLabel(viewDate);
+
+  const dayBk=allBookings.filter(b=>b.date===viewDate);
+  const pending=dayBk.filter(b=>b.status==='PENDING').length;
+  const confirmed=dayBk.filter(b=>b.status==='CONFIRMED').length;
+  document.getElementById('viewCount').innerHTML=
+    `${dayBk.length} booking${dayBk.length!==1?'s':''}` +
+    (pending>0?`<span class="count-badge badge-pending">⏳ ${pending} pending</span>`:'') +
+    (confirmed>0?`<span class="count-badge badge-confirmed">✅ ${confirmed} confirmed</span>`:'');
+
+  const isBlocked=blockedDates.includes(viewDate);
+  document.getElementById('blockBtn').style.display=isBlocked?'none':'';
+  document.getElementById('unblockBtn').style.display=isBlocked?'':'none';
+
+  const con=document.getElementById('bookingsList');
+  if(isBlocked){con.innerHTML='<div class="empty-day">🚫 This date is blocked.<br/><small style="color:#d1d5db">No patient bookings accepted.</small></div>';return;}
+  if(dayBk.length===0){con.innerHTML='<div class="empty-day">No bookings for this date.</div>';return;}
+
+  // Group by slot
+  let html='';
+  SLOTS.forEach(sl=>{
+    const slBk=dayBk.filter(b=>b.slot===sl);
+    if(slBk.length===0)return;
+    html+=`<div class="slot-section"><div class="slot-header">${fmtT(sl)} <span class="slot-line"></span> ${slBk.length}/2</div>`;
+    slBk.forEach(b=>{
+      html+=renderCard(b);
+    });
+    html+='</div>';
+  });
+  con.innerHTML=html;
+}
+
+function renderCard(b){
+  const stCls=b.status==='CONFIRMED'?'s-confirmed':b.status==='CANCELLED'?'s-cancelled':'s-pending';
+  const cardCls=b.status==='CONFIRMED'?'confirmed':b.status==='CANCELLED'?'cancelled':'pending';
+  const waMsg=encodeURIComponent(`Hi ${b.name},\n\n✅ Your appointment at Dr. LGK Ultrasound Clinic is CONFIRMED.\n\nToken: ${b.token}\nScan: ${b.scan}\nDate: ${dateLabel(b.date)}\nTime: ${fmtT(b.slot)}\n\nKindly be present 10 min before your slot. Carry your ID proof.\n\n📞 7204764969 – Dr. LGK Ultrasound Clinic, Sirsi`);
+  const waLink=`https://wa.me/91${b.phone}?text=${waMsg}`;
+  const confirmBtn=b.status==='PENDING'?`<button class="btn-confirm" onclick="confirmBooking('${b.token}',this)">✅ Confirm &amp; Send PDF</button>`:'';
+  const cancelBtn=b.status!=='CANCELLED'?`<button class="btn-cancel" onclick="cancelBooking('${b.token}',this)">✖ Cancel</button>`:'';
+  return`<div class="bk-card ${cardCls}" id="card-${b.token}">
+    <div class="bk-top">
+      <div><div class="bk-name">${b.name}</div><div class="bk-scan">${b.scan}</div></div>
+      <div class="bk-status ${stCls}">${b.status}</div>
+    </div>
+    <div class="bk-meta">
+      <span>👤 ${b.age} yrs · ${b.gender}</span>
+      <span>📞 ${b.phone}</span>
+      <span>📍 ${b.address||'—'}</span>
+    </div>
+    <div class="txn-chip">UPI Txn: ${b.upiTxn}</div>
+    <div class="bk-actions">
+      ${confirmBtn}
+      <a class="btn-wa" href="${waLink}" target="_blank">📲 WhatsApp</a>
+      ${cancelBtn}
+    </div>
+  </div>`;
+}
+
+// ── CONFIRM ───────────────────────────────────────────────
+function confirmBooking(token, btn){
+  btn.disabled=true; btn.textContent='Processing…';
+  const b=allBookings.find(x=>x.token===token);
+  if(!b){showToast('Booking not found');return;}
+
+  // 1. Update status locally
+  b.status='CONFIRMED';
+
+  // 2. Generate PDF
+  const pdfBlob=generatePDF(b);
+
+  // 3. Update Apps Script
+  if(SCRIPT_URL!=='YOUR_APPS_SCRIPT_URL_HERE'){
+    fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'confirm',token})}).catch(()=>{});
+  }
+
+  // 4. Download PDF (doctor will attach it to WhatsApp manually)
+  const url=URL.createObjectURL(pdfBlob);
+  const a=document.createElement('a');a.href=url;a.download=`Token_${token}.pdf`;a.click();
+  URL.revokeObjectURL(url);
+
+  // 5. Open WhatsApp
+  const dfmt=dateLabel(b.date);
+  const msg=encodeURIComponent(`Hi ${b.name},\n\n✅ Your appointment is CONFIRMED!\n\nToken: ${b.token}\nScan: ${b.scan}\nDate: ${dfmt}\nTime: ${fmtT(b.slot)}\nAdvance paid: ₹${b.advance}\n\nPlease carry your ID proof and arrive 10 min early.\nSending your PDF appointment token in this chat.\n\n📞 7204764969 – Dr. LGK Ultrasound Clinic, Sirsi`);
+  setTimeout(()=>window.open(`https://wa.me/91${b.phone}?text=${msg}`,'_blank'),600);
+
+  showToast('✅ PDF downloaded. WhatsApp opened — attach PDF and send!');
+  calcWeekCounts();
+  buildWeekStrip();
+  renderDay();
+}
+
+// ── CANCEL ────────────────────────────────────────────────
+function cancelBooking(token, btn){
+  if(!confirm('Cancel this booking?'))return;
+  const b=allBookings.find(x=>x.token===token);
+  if(!b)return;
+  b.status='CANCELLED';
+  if(SCRIPT_URL!=='YOUR_APPS_SCRIPT_URL_HERE'){
+    fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'cancel',token})}).catch(()=>{});
+  }
+  calcWeekCounts();buildWeekStrip();renderDay();
+  showToast('Booking cancelled');
+}
+
+// ── BLOCK / UNBLOCK ───────────────────────────────────────
+function openBlockModal(){
+  document.getElementById('blockDateRange').textContent='Date: '+dateLabel(viewDate);
+  document.getElementById('blockReason').value='';
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal(){document.getElementById('modalBg').classList.remove('open');}
+function doBlock(){
+  const reason=document.getElementById('blockReason').value.trim()||'Clinic not available';
+  if(!blockedDates.includes(viewDate))blockedDates.push(viewDate);
+  if(SCRIPT_URL!=='YOUR_APPS_SCRIPT_URL_HERE'){
+    fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'block',date:viewDate,reason})}).catch(()=>{});
+  }
+  closeModal();buildWeekStrip();renderDay();
+  showToast('Date blocked: '+dateLabel(viewDate));
+}
+function unblockDate(){
+  blockedDates=blockedDates.filter(d=>d!==viewDate);
+  if(SCRIPT_URL!=='YOUR_APPS_SCRIPT_URL_HERE'){
+    fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'unblock',date:viewDate})}).catch(()=>{});
+  }
+  buildWeekStrip();renderDay();
+  showToast('Date unblocked');
+}
+
+// ── PDF GENERATOR ─────────────────────────────────────────
+function generatePDF(b){
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'a5'});
+  const W=148,M=14;
+
+  // Header
+  doc.setFillColor(26,92,58);doc.rect(0,0,W,40,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(14);doc.setFont('helvetica','bold');
+  doc.text('Dr. L G Krishna Ultrasound Clinic',W/2,13,{align:'center'});
+  doc.setFontSize(8);doc.setFont('helvetica','normal');
+  doc.text('USG & Doppler Centre · Sirsi, Karnataka',W/2,19,{align:'center'});
+  doc.text('Ph: 7204764969',W/2,24,{align:'center'});
+  doc.setFontSize(10);doc.setFont('helvetica','bold');
+  doc.text('CONFIRMED APPOINTMENT TOKEN',W/2,32,{align:'center'});
+
+  // Confirmed badge
+  doc.setFillColor(212,237,218);doc.roundedRect(M,43,W-2*M,6,2,2,'F');
+  doc.setTextColor(30,100,50);doc.setFontSize(8);doc.setFont('helvetica','bold');
+  doc.text('✓  PAYMENT VERIFIED & CONFIRMED',W/2,47.5,{align:'center'});
+
+  // Token
+  doc.setFillColor(240,250,244);doc.roundedRect(M,51,W-2*M,16,4,4,'F');
+  doc.setTextColor(26,92,58);doc.setFontSize(22);doc.setFont('helvetica','bold');
+  doc.text(b.token,W/2,62,{align:'center'});
+
+  // Details
+  const dfmt=new Date(b.date+'T00:00:00').toLocaleDateString('en-IN',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+  const rows=[['Patient Name',b.name],['Age / Gender',b.age+' yrs · '+b.gender],['Phone',b.phone],['Scan Required',b.scan],['Date',dfmt],['Time Slot',fmtT(b.slot)],['UPI Transaction',b.upiTxn],['Advance Paid','Rs. '+b.advance+' (Verified)'],['Address',b.address||'—']];
+  let y=73;doc.setFontSize(8);
+  rows.forEach((r,i)=>{
+    if(i%2===0){doc.setFillColor(232,245,238);doc.rect(M,y-4,W-2*M,8,'F');}
+    doc.setTextColor(100,100,100);doc.setFont('helvetica','normal');doc.text(r[0]+':',M+2,y);
+    doc.setTextColor(26,92,58);doc.setFont('helvetica','bold');
+    doc.text(String(r[1]).substring(0,40),M+50,y);
+    y+=9;
+  });
+
+  // Instructions
+  y+=4;
+  doc.setFillColor(220,252,231);doc.roundedRect(M,y,W-2*M,20,3,3,'F');
+  doc.setTextColor(20,83,45);doc.setFontSize(7.5);doc.setFont('helvetica','bold');
+  doc.text('IMPORTANT:',M+4,y+6);doc.setFont('helvetica','normal');
+  doc.text('Please arrive 10 minutes before your scheduled slot.',M+4,y+12);
+  doc.text('Carry valid ID proof. Balance scan charges payable at clinic.',M+4,y+18);
+
+  // Footer
+  doc.setTextColor(150,150,150);doc.setFontSize(7);
+  doc.text('Time may vary by 30-45 min. Outside 9:30AM-5:30PM attracts extra charges.',W/2,200,{align:'center'});
+  doc.text('This is a system-generated confirmed token. Dr. LGK Ultrasound Clinic, Sirsi.',W/2,204,{align:'center'});
+
+  return new Blob([doc.output('arraybuffer')],{type:'application/pdf'});
+}
+
+// ── DEMO DATA ─────────────────────────────────────────────
+function getDemoBookings(){
+  const t=todayStr(),tm=addDays(t,1);
+  return[
+    {token:'LGK-'+t.replace(/-/g,'')+'-101',name:'Suma Hegde',age:'28',gender:'Female',phone:'9876543210',scan:'Anomaly Scan',date:t,slot:'09:30',slotDisplay:'9:30 AM',upiTxn:'412345678901',advance:500,status:'PENDING',address:'Sirsi, Uttara Kannada'},
+    {token:'LGK-'+t.replace(/-/g,'')+'-102',name:'Ramesh Naik',age:'45',gender:'Male',phone:'8765432109',scan:'Abdomen & Pelvis',date:t,slot:'10:00',slotDisplay:'10:00 AM',upiTxn:'412345678902',advance:500,status:'CONFIRMED',address:'Yellapur, UK'},
+    {token:'LGK-'+t.replace(/-/g,'')+'-103',name:'Priya Bhat',age:'32',gender:'Female',phone:'7654321098',scan:'NT Scan',date:t,slot:'10:00',slotDisplay:'10:00 AM',upiTxn:'412345678903',advance:500,status:'PENDING',address:'Honnavar, UK'},
+    {token:'LGK-'+tm.replace(/-/g,'')+'-104',name:'Anita Shet',age:'24',gender:'Female',phone:'9988776655',scan:'Early Pregnancy (EP)',date:tm,slot:'11:00',slotDisplay:'11:00 AM',upiTxn:'412345678904',advance:500,status:'PENDING',address:'Sirsi'},
+  ];
+}
+
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>
