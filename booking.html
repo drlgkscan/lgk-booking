@@ -250,7 +250,7 @@ textarea{resize:vertical;min-height:70px}
   </div>
   <div class="brow">
     <button class="btn btn-o" onclick="goStep(2)">← Back</button>
-    <button class="btn btn-p" id="submitBtn" onclick="doSubmit()" disabled>Submit Booking →</button>
+    <button class="btn btn-p" id="submitBtn" onclick="doSubmit()">Submit Booking →</button>
   </div>
 </div>
 
@@ -285,7 +285,7 @@ textarea{resize:vertical;min-height:70px}
 <div class="toast" id="toast"></div>
 
 <script>
-const SCRIPT_URL='YOUR_APPS_SCRIPT_URL_HERE';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyg-2EA3yOYJSNmz1wNIrbUoj3CmkYABsUx-F6zzLDT0G9Gpa_TE9XQHtgWYc23D7NK/exec';
 const CLINIC_WA='917204764969';
 const SLOTS=['09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
 let cur=1,gender='',scan='',slot='',slotData={},bk={};
@@ -356,6 +356,12 @@ function updStepper(){
 }
 function mkToken(){return'LGK-'+document.getElementById('f-date').value.replace(/-/g,'')+'-'+String(Math.floor(Math.random()*900)+100);}
 function doSubmit(){
+  if(!document.getElementById('f-decl').checked){
+    document.getElementById('e-decl').style.display='block';
+    document.getElementById('f-decl').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  document.getElementById('e-decl').style.display='none';
   const txn=document.getElementById('f-txn').value.trim();
   if(!txn){document.getElementById('e-txn').style.display='block';return;}
   document.getElementById('e-txn').style.display='none';
