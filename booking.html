@@ -71,7 +71,7 @@ textarea{resize:vertical;min-height:70px}
 .pnum{width:20px;height:20px;background:var(--g1);color:#fff;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .decl-box{background:#fffbeb;border:1.5px solid #fcd34d;border-radius:12px;padding:14px;font-size:12.5px;line-height:1.7;color:#78350f;margin-bottom:14px}
 .decl-box ol{margin-left:16px}
-.chk-row{display:flex;align-items:flex-start;gap:10px;padding:11px;background:#fff;border-radius:10px;border:1.5px solid #d1fae5;cursor:pointer;transition:border-color .2s,background .2s}.chk-row:has(input:checked){border-color:var(--g1);background:var(--g3)}
+.chk-row{display:flex;align-items:flex-start;gap:10px;padding:11px;background:#fff;border-radius:10px;border:1.5px solid #d1fae5;cursor:pointer}
 .chk-row input[type=checkbox]{width:17px;height:17px;flex-shrink:0;margin-top:2px;accent-color:var(--g1);cursor:pointer}
 .chk-row span{font-size:12.5px;line-height:1.5}
 /* WAITING */
@@ -242,11 +242,9 @@ textarea{resize:vertical;min-height:70px}
         <li>Advance is non-refundable in case of no-show or last-minute cancellation.</li>
       </ol>
     </div>
-    <label class="chk-row">
-      <input type="checkbox" id="f-decl"/>
-      <span>I have read and accept all the above terms and conditions.</span>
-    </label>
-    <div class="ferr" id="e-decl">Please accept the declaration</div>
+    <div style="background:var(--g3);border-radius:10px;padding:11px 14px;font-size:12.5px;color:var(--g1);border:1.5px solid rgba(26,92,58,.15);line-height:1.5">
+      ✅ By clicking <strong>Submit Booking</strong> below, you confirm that you have read and accept all the above terms and conditions.
+    </div>
   </div>
   <div class="brow">
     <button class="btn btn-o" onclick="goStep(2)">← Back</button>
@@ -330,7 +328,7 @@ window.addEventListener('load',()=>{
 });
 
 function copyUPI(){navigator.clipboard.writeText('drsatishscan@upi').then(()=>showToast('UPI ID copied!'));}
-// declaration validated on submit
+
 
 function validate1(){
   let ok=true;
@@ -356,12 +354,7 @@ function updStepper(){
 }
 function mkToken(){return'LGK-'+document.getElementById('f-date').value.replace(/-/g,'')+'-'+String(Math.floor(Math.random()*900)+100);}
 function doSubmit(){
-  if(!document.getElementById('f-decl').checked){
-    document.getElementById('e-decl').style.display='block';
-    document.getElementById('f-decl').scrollIntoView({behavior:'smooth',block:'center'});
-    return;
-  }
-  document.getElementById('e-decl').style.display='none';
+  // Declaration accepted by clicking Submit
   const txn=document.getElementById('f-txn').value.trim();
   if(!txn){document.getElementById('e-txn').style.display='block';return;}
   document.getElementById('e-txn').style.display='none';
