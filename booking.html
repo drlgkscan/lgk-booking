@@ -24,7 +24,6 @@ body{font-family:'Nunito',sans-serif;background:#eef7f2;color:var(--text);min-he
 .sp.active .sc{background:var(--g1);border-color:var(--g1);color:#fff}
 .sp.active .sl{color:var(--g1)}
 .sp.done .sc{background:var(--g2);border-color:var(--g2);color:#fff}
-.sp.done+.scon,.scon.done{background:var(--g2)}
 .main{max-width:620px;margin:0 auto;padding:20px 14px 60px}
 .panel{display:none}.panel.active{display:block}
 .card{background:#fff;border-radius:18px;padding:22px;box-shadow:var(--shadow);margin-bottom:14px;border:1px solid rgba(26,92,58,.06)}
@@ -59,19 +58,28 @@ textarea{resize:vertical;min-height:70px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .blocked-msg{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;padding:14px;text-align:center;color:var(--red);font-size:13px;margin-top:14px}
 .info-bar{background:var(--g3);border-left:3px solid var(--g1);border-radius:8px;padding:11px 14px;font-size:12.5px;margin-bottom:14px;line-height:1.6}
-/* SAME DAY SURCHARGE ALERT */
-.sameday-alert{background:#fff8e1;border:2px solid #f59e0b;border-radius:12px;padding:14px;margin-top:12px;font-size:13px;color:#78350f;display:none;line-height:1.6}
-.sameday-alert strong{color:#b45309;font-size:14px}
+/* SAME DAY ALERT */
+.sameday-alert{display:none;background:#fff8e1;border:2px solid #f59e0b;border-radius:12px;padding:14px;margin-top:12px;font-size:13px;color:#78350f;line-height:1.7}
+.sameday-alert .sd-title{font-size:15px;font-weight:700;color:#b45309;margin-bottom:6px}
+/* SAME DAY SEAL */
+.sameday-seal{display:none;background:linear-gradient(135deg,#b45309,#d97706);color:#fff;border-radius:12px;padding:16px 18px;margin-bottom:16px;position:relative;overflow:hidden}
+.sameday-seal::before{content:'⚡';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:48px;opacity:0.15}
+.sd-seal-title{font-size:16px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
+.sd-seal-kn{font-size:12px;opacity:0.9;margin-bottom:12px}
+.sd-breakdown{background:rgba(255,255,255,0.15);border-radius:8px;padding:10px 12px;font-size:12.5px;line-height:2}
+.sd-breakdown .row{display:flex;justify-content:space-between}
+.sd-breakdown .row.total{border-top:1px solid rgba(255,255,255,0.3);margin-top:6px;padding-top:6px;font-weight:700;font-size:14px}
+.sd-note{font-size:11px;opacity:0.85;margin-top:10px;line-height:1.6;background:rgba(0,0,0,0.1);border-radius:6px;padding:8px 10px}
 /* DUPLICATE ALERT */
-.dup-alert{background:#fef2f2;border:2px solid #fca5a5;border-radius:12px;padding:14px;margin-top:8px;font-size:13px;color:var(--red);display:none;line-height:1.6}
+.dup-alert{display:none;background:#fef2f2;border:2px solid #fca5a5;border-radius:12px;padding:14px;margin-top:8px;font-size:13px;color:var(--red);line-height:1.7}
 /* POLICY BOX */
 .policy-box{background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:14px;font-size:12.5px;color:#14532d;margin-bottom:14px;line-height:1.8}
 .policy-box .ptitle{font-weight:700;font-size:13px;margin-bottom:6px;color:var(--g1)}
 .policy-box ul{margin-left:16px}
+/* PAYMENT */
 .upi-box{background:linear-gradient(135deg,var(--g3),#f0fdf7);border:1.5px solid rgba(26,92,58,.12);border-radius:16px;padding:22px;text-align:center;margin-bottom:18px}
 .upi-amt{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;color:var(--g1);line-height:1}
-.upi-amt-note{font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;margin-top:3px}
-.upi-lbl{font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+.upi-lbl{font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;margin-top:3px}
 #qr-wrap{display:flex;justify-content:center;margin:14px 0}
 #qr-wrap canvas,#qr-wrap img{border-radius:10px;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.10)}
 .upi-id{background:#fff;border-radius:9px;padding:9px 16px;font-size:14px;font-weight:700;color:var(--g1);display:inline-block;border:1.5px solid rgba(26,92,58,.18);cursor:pointer;font-family:'Nunito',sans-serif}
@@ -129,49 +137,49 @@ textarea{resize:vertical;min-height:70px}
 
 <div class="main">
 
-<!-- STEP 1: DETAILS -->
+<!-- STEP 1 -->
 <div class="panel active" id="step1">
   <div class="card">
     <div class="ctitle"><span class="cicon">👤</span>Patient Details / ರೋಗಿಯ ವಿವರ</div>
     <div class="fr">
       <label>Patient Name / ಹೆಸರು <span class="req">*</span></label>
-      <input type="text" id="f-name" placeholder="Full name as on ID"/>
-      <div class="ferr" id="e-name">Please enter patient name</div>
+      <input type="text" id="f-name" placeholder="Full name as on ID / ಹೆಸರು"/>
+      <div class="ferr" id="e-name">Please enter patient name / ಹೆಸರು ನಮೂದಿಸಿ</div>
     </div>
     <div class="fr two">
       <div>
         <label>Age / ವಯಸ್ಸು <span class="req">*</span></label>
-        <input type="number" id="f-age" placeholder="Years" min="1" max="120"/>
-        <div class="ferr" id="e-age">Enter valid age</div>
+        <input type="number" id="f-age" placeholder="Years / ವರ್ಷ" min="1" max="120"/>
+        <div class="ferr" id="e-age">Enter valid age / ವಯಸ್ಸು ನಮೂದಿಸಿ</div>
       </div>
       <div>
         <label>Gender / ಲಿಂಗ <span class="req">*</span></label>
         <div class="ggrp">
-          <div class="gbtn" onclick="selGender('Male',this)">♂ Male</div>
-          <div class="gbtn" onclick="selGender('Female',this)">♀ Female</div>
+          <div class="gbtn" onclick="selGender('Male',this)">♂ Male / ಪುರುಷ</div>
+          <div class="gbtn" onclick="selGender('Female',this)">♀ Female / ಮಹಿಳೆ</div>
         </div>
         <input type="hidden" id="f-gender"/>
-        <div class="ferr" id="e-gender">Select gender</div>
+        <div class="ferr" id="e-gender">Select gender / ಲಿಂಗ ಆಯ್ಕೆ ಮಾಡಿ</div>
       </div>
     </div>
     <div class="fr">
-      <label>Phone Number / ಫೋನ್ <span class="req">*</span></label>
-      <input type="tel" id="f-phone" placeholder="10-digit mobile number" maxlength="10" onblur="checkDuplicate()"/>
-      <div class="ferr" id="e-phone">Enter valid 10-digit number</div>
+      <label>Phone Number / ಫೋನ್ ಸಂಖ್ಯೆ <span class="req">*</span></label>
+      <input type="tel" id="f-phone" placeholder="10-digit mobile / 10 ಅಂಕಿ ಮೊಬೈಲ್" maxlength="10" onblur="checkDuplicate()"/>
+      <div class="ferr" id="e-phone">Enter valid 10-digit number / 10 ಅಂಕಿ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ</div>
       <div class="dup-alert" id="dup-alert">
-        ⚠️ <strong>Existing booking found / ಈಗಾಗಲೇ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಇದೆ</strong><br/>
-        This number already has an active booking. To cancel and rebook, call <strong>7204764969</strong>.<br/>
-        ಈ ಸಂಖ್ಯೆಯಲ್ಲಿ ಬುಕಿಂಗ್ ಇದೆ. ರದ್ದು ಮಾಡಲು ಕರೆ ಮಾಡಿ: <strong>7204764969</strong>
+        ⚠️ <strong>Existing booking found! / ಈಗಾಗಲೇ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಇದೆ!</strong><br/>
+        This number already has an active booking. To cancel your existing booking and make a fresh one, call <strong>7204764969</strong>.<br/>
+        ಈ ಸಂಖ್ಯೆಯಲ್ಲಿ ಬುಕಿಂಗ್ ಈಗಾಗಲೇ ಇದೆ. ರದ್ದುಮಾಡಿ ಹೊಸದಾಗಿ ಬುಕ್ ಮಾಡಲು ಕರೆ ಮಾಡಿ: <strong>7204764969</strong>
       </div>
     </div>
     <div class="fr">
-      <label>Email <span style="font-weight:400;color:var(--gray)">(optional)</span></label>
+      <label>Email <span style="font-weight:400;color:var(--gray)">(optional / ಐಚ್ಛಿಕ)</span></label>
       <input type="email" id="f-email" placeholder="for backup token copy"/>
     </div>
     <div class="fr">
       <label>Address / ವಿಳಾಸ <span class="req">*</span></label>
-      <textarea id="f-addr" placeholder="Village / Town, Taluk, District"></textarea>
-      <div class="ferr" id="e-addr">Please enter address</div>
+      <textarea id="f-addr" placeholder="Village / Town, Taluk, District / ಗ್ರಾಮ, ತಾಲೂಕು, ಜಿಲ್ಲೆ"></textarea>
+      <div class="ferr" id="e-addr">Please enter address / ವಿಳಾಸ ನಮೂದಿಸಿ</div>
     </div>
   </div>
 
@@ -190,31 +198,30 @@ textarea{resize:vertical;min-height:70px}
       <div class="chip" onclick="selScan(this,'Thyroid Scan')">Thyroid Scan</div>
       <div class="chip" onclick="selScan(this,'Breast Scan')">Breast Scan</div>
       <div class="chip" onclick="selScan(this,'Scrotum Scan')">Scrotum Scan</div>
-      <div class="chip" onclick="selScan(this,'__other__')">Other…</div>
+      <div class="chip" onclick="selScan(this,'__other__')">Other / ಇತರೆ…</div>
     </div>
     <input type="hidden" id="f-scan"/>
-    <div class="ferr" id="e-scan">Please select scan type</div>
+    <div class="ferr" id="e-scan">Please select scan type / ಸ್ಕ್ಯಾನ್ ಆಯ್ಕೆ ಮಾಡಿ</div>
     <div id="other-wrap" style="display:none;margin-top:8px">
-      <input type="text" id="f-other" placeholder="Describe scan required"/>
+      <input type="text" id="f-other" placeholder="Describe scan required / ಸ್ಕ್ಯಾನ್ ವಿವರಿಸಿ"/>
     </div>
   </div>
 
-  <!-- POLICY BOX -->
   <div class="policy-box">
     <div class="ptitle">📋 Booking Policy / ಬುಕಿಂಗ್ ನಿಯಮಗಳು</div>
     <ul>
-      <li>Advance ₹500 is <strong>non-refundable</strong> / ₹500 ಮುಂಗಡ ಹಿಂತಿರುಗಿಸಲಾಗದು</li>
-      <li>Same day booking attracts <strong>₹100 extra urgent charge</strong> / ಅದೇ ದಿನ ಬುಕಿಂಗ್‌ಗೆ ₹100 ಹೆಚ್ಚುವರಿ</li>
+      <li>₹500 advance is <strong>non-refundable</strong> / ₹500 ಮುಂಗಡ ಹಿಂತಿರುಗಿಸಲಾಗದು</li>
+      <li><strong>Same day booking: ₹300 extra convenience charge</strong> (NOT part of scan fee) / ಅದೇ ದಿನ ಬುಕಿಂಗ್: ₹300 ಹೆಚ್ಚುವರಿ ಶುಲ್ಕ (ಸ್ಕ್ಯಾನ್ ಶುಲ್ಕದ ಭಾಗ ಅಲ್ಲ)</li>
+      <li>Booking available <strong>today to next 30 days only</strong> / ಇಂದಿನಿಂದ 30 ದಿನಗಳ ವರೆಗೆ ಮಾತ್ರ</li>
       <li>To cancel: call <strong>7204764969</strong> minimum 2 hours before / ರದ್ದು ಮಾಡಲು 2 ಗಂಟೆ ಮೊದಲು ಕರೆ ಮಾಡಿ</li>
-      <li>No reschedule — cancel and rebook fresh / ಮರು-ಬುಕಿಂಗ್ ಇಲ್ಲ</li>
-      <li>Appointments available <strong>today up to 30 days ahead</strong> only</li>
+      <li>No reschedule — cancel &amp; rebook fresh / ಮರು-ಶೆಡ್ಯೂಲ್ ಇಲ್ಲ — ಹೊಸ ಬುಕಿಂಗ್ ಮಾಡಿ</li>
     </ul>
   </div>
 
   <button class="btn btn-p" onclick="next1()">Continue to Slot Selection / ಮುಂದುವರಿಯಿರಿ →</button>
 </div>
 
-<!-- STEP 2: SLOT -->
+<!-- STEP 2 -->
 <div class="panel" id="step2">
   <div class="card">
     <div class="ctitle"><span class="cicon">📅</span>Select Date &amp; Time / ದಿನಾಂಕ ಮತ್ತು ಸಮಯ</div>
@@ -222,42 +229,55 @@ textarea{resize:vertical;min-height:70px}
     <div class="fr">
       <label>Appointment Date / ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ದಿನಾಂಕ <span class="req">*</span></label>
       <input type="date" id="f-date" onchange="onDateChange()"/>
-      <div class="ferr" id="e-date">Please select a date</div>
-      <!-- SAME DAY SURCHARGE ALERT -->
+      <div class="ferr" id="e-date">Please select a date / ದಿನಾಂಕ ಆಯ್ಕೆ ಮಾಡಿ</div>
       <div class="sameday-alert" id="sameday-alert">
-        ⚡ <strong>Same Day Booking — ₹100 Extra Urgent Charge</strong><br/>
-        You have selected today's date. A non-refundable urgent charge of <strong>₹100</strong> will be added.<br/>
-        Total advance payable: <strong>₹600</strong> (₹500 advance + ₹100 urgent)<br/>
-        <small style="color:#92400e;">ಅದೇ ದಿನ ಬುಕಿಂಗ್ — ₹100 ಹೆಚ್ಚುವರಿ ಅರ್ಜೆಂಟ್ ಶುಲ್ಕ ಅನ್ವಯಿಸುತ್ತದೆ. ಒಟ್ಟು ₹600 ಪಾವತಿಸಿ.</small>
+        <div class="sd-title">⚡ Same Day Booking / ಅದೇ ದಿನ ಬುಕಿಂಗ್</div>
+        You have selected today's date. An additional convenience charge applies.<br/>
+        ನೀವು ಇಂದಿನ ದಿನಾಂಕ ಆಯ್ಕೆ ಮಾಡಿದ್ದೀರಿ. ಹೆಚ್ಚುವರಿ ಅರ್ಜೆಂಟ್ ಶುಲ್ಕ ಅನ್ವಯಿಸುತ್ತದೆ.
       </div>
     </div>
     <div id="slots-section"></div>
     <input type="hidden" id="f-slot"/>
-    <div class="ferr" id="e-slot">Please select a time slot</div>
+    <div class="ferr" id="e-slot">Please select a time slot / ಸ್ಲಾಟ್ ಆಯ್ಕೆ ಮಾಡಿ</div>
   </div>
   <div class="brow">
-    <button class="btn btn-o" onclick="goStep(1)">← Back</button>
-    <button class="btn btn-p" onclick="next2()">Continue to Payment →</button>
+    <button class="btn btn-o" onclick="goStep(1)">← Back / ಹಿಂದೆ</button>
+    <button class="btn btn-p" onclick="next2()">Continue to Payment / ಪಾವತಿಗೆ ಮುಂದುವರಿಯಿರಿ →</button>
   </div>
 </div>
 
-<!-- STEP 3: PAYMENT -->
+<!-- STEP 3 -->
 <div class="panel" id="step3">
   <div class="card">
     <div class="ctitle"><span class="cicon">💳</span>Pay Advance / ಮುಂಗಡ ಪಾವತಿ</div>
+
+    <!-- SAME DAY SEAL — shown only for same-day bookings -->
+    <div class="sameday-seal" id="sameday-seal">
+      <div class="sd-seal-title">⚡ SAME DAY BOOKING / ಅದೇ ದಿನ ಬುಕಿಂಗ್</div>
+      <div class="sd-seal-kn">Urgent convenience charge applicable / ಅರ್ಜೆಂಟ್ ಸೌಲಭ್ಯ ಶುಲ್ಕ ಅನ್ವಯಿಸುತ್ತದೆ</div>
+      <div class="sd-breakdown">
+        <div class="row"><span>Part payment (advance toward scan) / ಮುಂಗಡ</span><span>₹500</span></div>
+        <div class="row"><span>Same day convenience charge / ಅರ್ಜೆಂಟ್ ಶುಲ್ಕ</span><span>₹300</span></div>
+        <div class="row total"><span>Total payable now / ಈಗ ಪಾವತಿಸಬೇಕಾದ ಮೊತ್ತ</span><span>₹800</span></div>
+      </div>
+      <div class="sd-note">
+        ⚠️ ₹300 same day charge is <strong>NOT part of your scan fee</strong> and will <strong>NOT be adjusted</strong> against clinic charges on the day of scan.<br/>
+        ₹300 ಅರ್ಜೆಂಟ್ ಶುಲ್ಕ ಸ್ಕ್ಯಾನ್ ಶುಲ್ಕದ ಭಾಗ <strong>ಅಲ್ಲ</strong> ಮತ್ತು ಕ್ಲಿನಿಕ್ ಶುಲ್ಕದಲ್ಲಿ ಹೊಂದಾಣಿಕೆ ಆಗುವುದಿಲ್ಲ.
+      </div>
+    </div>
+
     <div class="upi-box">
       <div class="upi-amt" id="pay-amount">₹500</div>
-      <div class="upi-amt-note" id="pay-note"></div>
-      <div class="upi-lbl">Non-refundable advance · UPI only / ಹಿಂತಿರುಗಿಸಲಾಗದ ಮುಂಗಡ</div>
+      <div class="upi-lbl" id="pay-lbl">Non-refundable advance · UPI only / ಹಿಂತಿರುಗಿಸಲಾಗದ ಮುಂಗಡ</div>
       <div id="qr-wrap"></div>
       <div class="upi-id" onclick="copyUPI()">drsatishscan@upi</div>
       <div class="copy-hint">Tap to copy UPI ID / ಒತ್ತಿ ನಕಲಿಸಿ</div>
     </div>
     <div class="pay-steps">
-      <div class="pstep"><div class="pnum">1</div><div>Open <strong>GPay / PhonePe / Paytm</strong> — scan QR or copy UPI ID above.</div></div>
-      <div class="pstep"><div class="pnum">2</div><div>Pay exact amount shown above. Note the <strong>Transaction ID</strong> after payment.</div></div>
-      <div class="pstep"><div class="pnum">3</div><div>Enter that <strong>Transaction ID</strong> below and submit.</div></div>
-      <div class="pstep"><div class="pnum">4</div><div>Your <strong>PDF appointment token will be sent to your WhatsApp</strong> after verification (within 30 min).</div></div>
+      <div class="pstep"><div class="pnum">1</div><div>Open <strong>GPay / PhonePe / Paytm</strong> — scan QR or copy UPI ID above / ಮೇಲಿನ UPI ID ನಕಲಿಸಿ.</div></div>
+      <div class="pstep"><div class="pnum">2</div><div>Pay <strong>exact amount shown above</strong>. Note the <strong>Transaction ID</strong> after payment / ಟ್ರಾನ್ಸಾಕ್ಷನ್ ID ನೋಟ್ ಮಾಡಿ.</div></div>
+      <div class="pstep"><div class="pnum">3</div><div>Enter <strong>Transaction ID</strong> below and submit / ಕೆಳಗೆ ನಮೂದಿಸಿ.</div></div>
+      <div class="pstep"><div class="pnum">4</div><div><strong>PDF token sent to WhatsApp</strong> after verification (within 30 min) / PDF ಟೋಕನ್ WhatsApp ಗೆ ಬರುತ್ತದೆ.</div></div>
     </div>
     <div class="fr">
       <label>UPI Transaction ID <span class="req">*</span></label>
@@ -268,47 +288,50 @@ textarea{resize:vertical;min-height:70px}
     <div class="decl-box">
       <strong>Declaration / ಘೋಷಣೆ – Please read:</strong>
       <ol style="margin-top:7px">
-        <li>Advance is <strong>non-refundable</strong> under any circumstances / ಮುಂಗಡ ಯಾವುದೇ ಕಾರಣಕ್ಕೂ ಹಿಂತಿರುಗಿಸಲಾಗದು</li>
-        <li>To cancel: call <strong>7204764969</strong> minimum 2 hours before appointment / ರದ್ದು: 2 ಗಂಟೆ ಮೊದಲು ಕರೆ ಮಾಡಿ</li>
-        <li>No reschedule option. Cancel and do fresh booking / ಮರು-ಶೆಡ್ಯೂಲ್ ಇಲ್ಲ</li>
-        <li>Time may vary by 30–45 minutes from allotted slot.</li>
+        <li>₹500 advance is <strong>non-refundable</strong> under any circumstances / ₹500 ಮುಂಗಡ ಯಾವ ಕಾರಣಕ್ಕೂ ಹಿಂತಿರುಗಿಸಲಾಗದು</li>
+        <li id="decl-sameday" style="display:none">₹300 same day charge is <strong>NOT adjustable</strong> against scan fee at clinic / ₹300 ಅರ್ಜೆಂಟ್ ಶುಲ್ಕ ಸ್ಕ್ಯಾನ್ ಶುಲ್ಕದಲ್ಲಿ ಹೊಂದಾಣಿಕೆ ಆಗುವುದಿಲ್ಲ</li>
+        <li>To cancel: call <strong>7204764969</strong> minimum 2 hours before / ರದ್ದು ಮಾಡಲು 2 ಗಂಟೆ ಮೊದಲು ಕರೆ ಮಾಡಿ</li>
+        <li>No reschedule. Cancel and rebook fresh / ಮರು-ಶೆಡ್ಯೂಲ್ ಇಲ್ಲ</li>
         <li>Balance scan charges payable at clinic / ಉಳಿದ ಶುಲ್ಕ ಕ್ಲಿನಿಕ್‌ನಲ್ಲಿ ಪಾವತಿಸಿ</li>
         <li>I will comply with all PCPNDT rules and regulations.</li>
       </ol>
     </div>
     <div style="background:var(--g3);border-radius:10px;padding:11px 14px;font-size:12.5px;color:var(--g1);border:1.5px solid rgba(26,92,58,.15);line-height:1.5">
-      ✅ By clicking <strong>Submit Booking</strong>, you accept all above terms / <strong>Submit</strong> ಒತ್ತುವ ಮೂಲಕ ಎಲ್ಲಾ ನಿಯಮಗಳನ್ನು ಒಪ್ಪಿಕೊಳ್ಳುತ್ತೀರಿ.
+      ✅ By clicking <strong>Submit Booking</strong>, you accept all above terms.<br/>
+      <strong>Submit Booking</strong> ಒತ್ತುವ ಮೂಲಕ ಎಲ್ಲಾ ನಿಯಮಗಳನ್ನು ಒಪ್ಪಿಕೊಳ್ಳುತ್ತೀರಿ.
     </div>
   </div>
   <div class="brow">
-    <button class="btn btn-o" onclick="goStep(2)">← Back</button>
-    <button class="btn btn-p" id="submitBtn" onclick="doSubmit()">Submit Booking →</button>
+    <button class="btn btn-o" onclick="goStep(2)">← Back / ಹಿಂದೆ</button>
+    <button class="btn btn-p" id="submitBtn" onclick="doSubmit()">Submit Booking / ಬುಕಿಂಗ್ ಸಲ್ಲಿಸಿ →</button>
   </div>
 </div>
 
-<!-- STEP 4: DONE -->
+<!-- STEP 4 -->
 <div class="panel" id="step4">
   <div class="card">
     <div class="wait-center">
       <div class="wait-icon">📨</div>
       <div class="wait-title">Booking Submitted! / ಬುಕಿಂಗ್ ಸಲ್ಲಿಸಲಾಗಿದೆ!</div>
       <div class="wait-sub">Payment being verified. PDF token will be sent to your WhatsApp.<br/>ಪಾವತಿ ಪರಿಶೀಲನೆ ನಡೆಯುತ್ತಿದೆ. PDF ಟೋಕನ್ WhatsApp ಗೆ ಬರುತ್ತದೆ.</div>
-      <div style="font-size:12px;color:var(--gray);margin-bottom:6px">Booking Reference</div>
+      <div style="font-size:12px;color:var(--gray);margin-bottom:6px">Booking Reference / ಬುಕಿಂಗ್ ಉಲ್ಲೇಖ</div>
       <div class="token-pill" id="tok-display">--</div><br/>
-      <div class="pending-badge">⏳ AWAITING PAYMENT VERIFICATION</div>
+      <div class="pending-badge">⏳ AWAITING PAYMENT VERIFICATION / ಪಾವತಿ ಪರಿಶೀಲನೆ ನಿರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ</div>
     </div>
     <div class="detail-box" id="detail-box"></div>
     <div class="txn-row" id="txn-row"></div>
     <div class="wa-box">
       <div class="wa-icon">📲</div>
-      <div>Send your <strong>UPI payment screenshot</strong> to WhatsApp <strong><a href="https://wa.me/917204764969" target="_blank" style="color:#14532d">7204764969</a></strong> with your booking reference. PDF token sent after verification.<br/><small>ಪಾವತಿ ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಮತ್ತು ಬುಕಿಂಗ್ ರೆಫರೆನ್ಸ್ WhatsApp ಗೆ ಕಳುಹಿಸಿ.</small></div>
+      <div>Send your <strong>UPI payment screenshot</strong> to WhatsApp <strong><a href="https://wa.me/917204764969" target="_blank" style="color:#14532d">7204764969</a></strong> with your booking reference. PDF token sent after verification.<br/>
+      <small>ಪಾವತಿ ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಮತ್ತು ಬುಕಿಂಗ್ ರೆಫರೆನ್ಸ್ WhatsApp ಗೆ ಕಳುಹಿಸಿ.</small></div>
     </div>
   </div>
   <a class="btn-wa" id="wa-btn" href="#" target="_blank" style="margin-bottom:10px">
     📲 Send Screenshot on WhatsApp / ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಕಳುಹಿಸಿ
   </a>
   <div style="font-size:12px;color:var(--gray);text-align:center;margin-top:8px;line-height:1.7;padding:0 10px">
-    PDF token within 30 min during clinic hours · Mon–Sat 9:30 AM – 5:30 PM · 📞 7204764969
+    PDF token within 30 min during clinic hours · Mon–Sat 9:30 AM – 5:30 PM · 📞 7204764969<br/>
+    ಕ್ಲಿನಿಕ್ ಸಮಯದಲ್ಲಿ 30 ನಿಮಿಷದಲ್ಲಿ PDF ಟೋಕನ್ ಬರುತ್ತದೆ
   </div>
 </div>
 
@@ -321,72 +344,50 @@ const CLINIC_WA='917204764969';
 const SLOTS=['09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
 let cur=1,gender='',scan='',slot='',slotData={},bk={},isSameDay=false,hasDuplicate=false;
 
-// ── DATE HELPERS ─────────────────────────────────────────────────────────────
-function todayStr(){
-  const t=new Date(),y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');
-  return`${y}-${m}-${d}`;
-}
-function maxDateStr(){
-  const t=new Date();t.setDate(t.getDate()+30);
-  const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');
-  return`${y}-${m}-${d}`;
-}
+function todayStr(){const t=new Date(),y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');return`${y}-${m}-${d}`;}
+function maxDateStr(){const t=new Date();t.setDate(t.getDate()+30);const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');return`${y}-${m}-${d}`;}
 
-// ── INIT ─────────────────────────────────────────────────────────────────────
 window.addEventListener('load',()=>{
   const fd=document.getElementById('f-date');
   fd.min=todayStr();
-  fd.max=maxDateStr(); // RULE: max 30 days ahead
+  fd.max=maxDateStr();
   new QRCode(document.getElementById('qr-wrap'),{text:`upi://pay?pa=drsatishscan@upi&pn=Dr%20LGK%20Ultrasound&am=500&cu=INR`,width:170,height:170,colorDark:'#1a5c3a',colorLight:'#ffffff'});
 });
 
-// ── DATE CHANGE ──────────────────────────────────────────────────────────────
 function onDateChange(){
   const d=document.getElementById('f-date').value;
   if(!d)return;
-
-  // RULE: Block Sundays
   if(new Date(d+'T00:00:00').getDay()===0){
     document.getElementById('slots-section').innerHTML='<div class="blocked-msg">🚫 Clinic is closed on Sundays. / ಭಾನುವಾರ ರಜೆ. Please choose another date.</div>';
     slot='';return;
   }
-
-  // RULE: Same day surcharge
   isSameDay=(d===todayStr());
-  const alert=document.getElementById('sameday-alert');
-  const payAmt=document.getElementById('pay-amount');
-  const payNote=document.getElementById('pay-note');
-  if(isSameDay){
-    alert.style.display='block';
-    payAmt.textContent='₹600';
-    payNote.textContent='₹500 advance + ₹100 same day urgent charge';
-  } else {
-    alert.style.display='none';
-    payAmt.textContent='₹500';
-    payNote.textContent='';
-  }
-
+  document.getElementById('sameday-alert').style.display=isSameDay?'block':'none';
+  document.getElementById('sameday-seal').style.display=isSameDay?'block':'none';
+  document.getElementById('pay-amount').textContent=isSameDay?'₹800':'₹500';
+  document.getElementById('pay-lbl').textContent=isSameDay?'₹500 advance + ₹300 same day charge / ₹500 ಮುಂಗಡ + ₹300 ಅರ್ಜೆಂಟ್ ಶುಲ್ಕ':'Non-refundable advance · UPI only / ಹಿಂತಿರುಗಿಸಲಾಗದ ಮುಂಗಡ';
+  document.getElementById('decl-sameday').style.display=isSameDay?'list-item':'none';
   loadSlots(d);
 }
 
 function loadSlots(d){
   const sec=document.getElementById('slots-section');
-  sec.innerHTML='<div class="slot-loading"><div class="spin"></div>Loading slots…</div>';
+  sec.innerHTML='<div class="slot-loading"><div class="spin"></div>Loading slots… / ಸ್ಲಾಟ್ ಲೋಡ್ ಆಗುತ್ತಿದೆ…</div>';
   fetch(SCRIPT_URL+'?action=slots&date='+d).then(r=>r.json()).then(data=>{
-    if(data.blocked){sec.innerHTML='<div class="blocked-msg">🚫 '+(data.reason||'Clinic not available on this date / ಈ ದಿನ ಲಭ್ಯವಿಲ್ಲ')+'.<br/>Please choose another date.</div>';return;}
+    if(data.blocked){sec.innerHTML='<div class="blocked-msg">🚫 '+(data.reason||'Clinic not available on this date / ಈ ದಿನ ಲಭ್ಯವಿಲ್ಲ')+'</div>';return;}
     slotData=data.slots||{};renderSlots();
   }).catch(()=>{slotData={};renderSlots();});
 }
 
 function renderSlots(){
   const sec=document.getElementById('slots-section');
-  let h='<div class="slot-wrap"><div class="slot-lbl">Available Time Slots / ಲಭ್ಯವಿರುವ ಸ್ಲಾಟ್‌ಗಳು</div><div class="slot-grid">';
+  let h='<div class="slot-wrap"><div class="slot-lbl">Available Time Slots / ಲಭ್ಯ ಸ್ಲಾಟ್‌ಗಳು</div><div class="slot-grid">';
   SLOTS.forEach(s=>{
     const c=slotData[s]||0,av=2-c;
     let cls='slot',av_t='';
-    if(av<=0){cls+=' full';av_t='<span class="slot-av">Full</span>';}
-    else if(av===1){cls+=' one';av_t='<span class="slot-av">1 left</span>';}
-    else{av_t='<span class="slot-av">Available</span>';}
+    if(av<=0){cls+=' full';av_t='<span class="slot-av">Full / ತುಂಬಿದೆ</span>';}
+    else if(av===1){cls+=' one';av_t='<span class="slot-av">1 left / 1 ಉಳಿದಿದೆ</span>';}
+    else{av_t='<span class="slot-av">Available / ಲಭ್ಯ</span>';}
     const clk=av>0?`onclick="selSlot('${s}',this)"`:'';
     h+=`<div class="${cls}" ${clk}>${fmtT(s)}${av_t}</div>`;
   });
@@ -399,23 +400,16 @@ function selGender(g,el){gender=g;document.getElementById('f-gender').value=g;do
 function selScan(el,v){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');if(v==='__other__'){document.getElementById('other-wrap').style.display='block';scan='';document.getElementById('f-scan').value='';}else{document.getElementById('other-wrap').style.display='none';scan=v;document.getElementById('f-scan').value=v;}}
 document.getElementById('f-other').addEventListener('input',function(){scan=this.value.trim();document.getElementById('f-scan').value=scan;});
 
-// ── DUPLICATE CHECK ──────────────────────────────────────────────────────────
 function checkDuplicate(){
   const phone=document.getElementById('f-phone').value.trim();
   if(phone.length!==10)return;
   hasDuplicate=false;
   document.getElementById('dup-alert').style.display='none';
-  fetch(SCRIPT_URL+'?action=checkDuplicate&phone='+phone)
-    .then(r=>r.json())
-    .then(data=>{
-      if(data.duplicate){
-        hasDuplicate=true;
-        document.getElementById('dup-alert').style.display='block';
-      }
-    }).catch(()=>{});
+  fetch(SCRIPT_URL+'?action=checkDuplicate&phone='+phone).then(r=>r.json()).then(data=>{
+    if(data.duplicate){hasDuplicate=true;document.getElementById('dup-alert').style.display='block';}
+  }).catch(()=>{});
 }
 
-// ── VALIDATION ───────────────────────────────────────────────────────────────
 function validate1(){
   let ok=true;
   [{id:'f-name',eid:'e-name',fn:v=>v.trim().length>=2},{id:'f-age',eid:'e-age',fn:v=>v&&+v>0&&+v<121},{id:'f-phone',eid:'e-phone',fn:v=>/^\d{10}$/.test(v.trim())},{id:'f-addr',eid:'e-addr',fn:v=>v.trim().length>=5}].forEach(f=>{
@@ -424,7 +418,7 @@ function validate1(){
   });
   if(!gender){document.getElementById('e-gender').style.display='block';ok=false;}else document.getElementById('e-gender').style.display='none';
   if(!scan.trim()){document.getElementById('e-scan').style.display='block';ok=false;}else document.getElementById('e-scan').style.display='none';
-  if(hasDuplicate){showToast('Existing booking found. Call 7204764969.');ok=false;}
+  if(hasDuplicate){showToast('Existing booking found. Call 7204764969. / ಬುಕಿಂಗ್ ಇದೆ, ಕರೆ ಮಾಡಿ.');ok=false;}
   return ok;
 }
 function validate2(){
@@ -437,30 +431,27 @@ function validate2(){
 function goStep(n){document.getElementById('step'+cur).classList.remove('active');cur=n;document.getElementById('step'+n).classList.add('active');updStepper();window.scrollTo({top:0,behavior:'smooth'});}
 function next1(){if(validate1())goStep(2);}
 function next2(){if(validate2())goStep(3);}
-function updStepper(){
-  for(let i=1;i<=4;i++){const el=document.getElementById('sp'+i);el.classList.remove('active','done');if(i<cur)el.classList.add('done');else if(i===cur)el.classList.add('active');if(i<4)document.getElementById('sc'+i).style.background=i<cur?'var(--g2)':'#e5e7eb';}
-}
+function updStepper(){for(let i=1;i<=4;i++){const el=document.getElementById('sp'+i);el.classList.remove('active','done');if(i<cur)el.classList.add('done');else if(i===cur)el.classList.add('active');if(i<4)document.getElementById('sc'+i).style.background=i<cur?'var(--g2)':'#e5e7eb';}}
 function mkToken(){return'LGK-'+document.getElementById('f-date').value.replace(/-/g,'')+'-'+String(Math.floor(Math.random()*900)+100);}
-function copyUPI(){navigator.clipboard.writeText('drsatishscan@upi').then(()=>showToast('UPI ID copied!'));}
+function copyUPI(){navigator.clipboard.writeText('drsatishscan@upi').then(()=>showToast('UPI ID copied! / ನಕಲಿಸಲಾಗಿದೆ!'));}
 
 function doSubmit(){
   const txn=document.getElementById('f-txn').value.trim();
   if(!txn){document.getElementById('e-txn').style.display='block';return;}
   document.getElementById('e-txn').style.display='none';
-  const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Submitting…';
+  const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Submitting… / ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ…';
   const token=mkToken(),dateStr=document.getElementById('f-date').value;
-  const advance=isSameDay?600:500;
+  const advance=isSameDay?800:500;
   bk={token,name:document.getElementById('f-name').value.trim(),age:document.getElementById('f-age').value,gender,phone:document.getElementById('f-phone').value.trim(),email:document.getElementById('f-email').value.trim(),address:document.getElementById('f-addr').value.trim(),scan,date:dateStr,slot,slotDisplay:fmtT(slot),upiTxn:txn,advance,sameDaySurcharge:isSameDay,status:'PENDING',submittedAt:new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})};
   fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(bk)}).catch(()=>{});
   const dfmt=new Date(dateStr+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   document.getElementById('tok-display').textContent=token;
-  document.getElementById('detail-box').innerHTML=`<div><strong>Patient:</strong> ${bk.name}</div><div><strong>Age / Gender:</strong> ${bk.age} yrs · ${bk.gender}</div><div><strong>Phone:</strong> ${bk.phone}</div><div><strong>Scan:</strong> ${bk.scan}</div><div><strong>Date:</strong> ${dfmt}</div><div><strong>Time Slot:</strong> ${bk.slotDisplay}</div><div><strong>Advance Paid:</strong> ₹${advance}${isSameDay?' (incl. ₹100 same-day charge)':''}</div>`;
-  document.getElementById('txn-row').textContent='UPI Transaction ID: '+txn;
-  const msg=encodeURIComponent(`Hi Dr. Satish,\n\nAppointment booking at Dr. LGK Ultrasound Clinic.\n\nToken: ${token}\nName: ${bk.name}\nScan: ${bk.scan}\nDate: ${dfmt}\nTime: ${bk.slotDisplay}\nUPI Txn ID: ${txn}\nAmount: ₹${advance}${isSameDay?' (same day surcharge included)':''}\n\nAttaching payment screenshot. Please confirm and send PDF token. 🙏`);
+  document.getElementById('detail-box').innerHTML=`<div><strong>Patient / ರೋಗಿ:</strong> ${bk.name}</div><div><strong>Age / Gender:</strong> ${bk.age} yrs · ${bk.gender}</div><div><strong>Phone / ಫೋನ್:</strong> ${bk.phone}</div><div><strong>Scan / ಸ್ಕ್ಯಾನ್:</strong> ${bk.scan}</div><div><strong>Date / ದಿನಾಂಕ:</strong> ${dfmt}</div><div><strong>Time / ಸಮಯ:</strong> ${bk.slotDisplay}</div><div><strong>Advance paid / ಪಾವತಿ:</strong> ₹${advance}${isSameDay?' (₹500 advance + ₹300 same day charge)':''}</div>`;
+  document.getElementById('txn-row').textContent='UPI Txn ID: '+txn;
+  const msg=encodeURIComponent(`Hi Dr. Satish,\n\nAppointment booking at Dr. LGK Ultrasound Clinic.\n\nToken: ${token}\nName: ${bk.name}\nScan: ${bk.scan}\nDate: ${dfmt}\nTime: ${bk.slotDisplay}\nUPI Txn ID: ${txn}\nAmount paid: ₹${advance}${isSameDay?'\n⚡ SAME DAY BOOKING — ₹300 convenience charge included (NOT part of scan fee)':''}\n\nAttaching payment screenshot. Please confirm and send PDF token. 🙏`);
   document.getElementById('wa-btn').href=`https://wa.me/${CLINIC_WA}?text=${msg}`;
   goStep(4);
 }
-
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 </script>
 </body>
