@@ -383,6 +383,7 @@ function render(){
   let done=0, waiting=0;
   keys.forEach(k=>{
     const b=bookings[k];
+    if (!b) return;
     if (b.status==='no_show') return;
     if (k<=nowServing) done++; else waiting++;
   });
@@ -391,8 +392,9 @@ function render(){
   document.getElementById('sumDone').textContent = done;
   document.getElementById('sumWaiting').textContent = waiting;
 
-  list.innerHTML = keys.map(k=>{
+list.innerHTML = keys.map(k=>{
     const b = bookings[k];
+    if (!b) return '';
     let cls = 'token-row';
     if (b.status==='no_show') cls += ' no-show';
     else if (k===nowServing) cls += ' now';
