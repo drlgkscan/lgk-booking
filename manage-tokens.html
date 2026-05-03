@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Manage Tokens — Reception</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--blue:#1a3a6b;--mid:#2557a7;--red:#c0392b;--green:#0a7c42;--gold:#e8a020;--amber:#f59e0b;--bg:#f0f4f8;--white:#fff;--shadow:0 4px 20px rgba(26,58,107,0.12);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;}
+.header{background:linear-gradient(135deg,var(--blue),var(--mid));color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;}
+.header h1{font-family:'DM Serif Display',serif;font-size:18px;}
+.header .sub{font-size:11px;opacity:0.7;margin-top:2px;}
+.sync-dot{width:10px;height:10px;border-radius:50%;background:#4caf50;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.body{max-width:760px;margin:0 auto;padding:18px 14px 80px;}
+
+.toolbar{background:#fff;border-radius:14px;padding:14px;box-shadow:var(--shadow);margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.toolbar input[type=date]{flex:1;min-width:140px;padding:10px;border:1.5px solid #d1d5db;border-radius:9px;font-size:14px;font-family:'DM Sans',sans-serif;}
+.toolbar button{padding:10px 16px;border:none;border-radius:9px;background:var(--mid);color:#fff;font-weight:600;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;}
+.toolbar .now-serving{background:#fef3c7;color:#92400e;padding:8px 14px;border-radius:9px;font-weight:700;font-size:13px;}
+
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.summary-card{background:#fff;border-radius:12px;padding:14px;text-align:center;box-shadow:var(--shadow);}
+.summary-card .num{font-size:24px;font-weight:800;color:var(--blue);}
+.summary-card .lbl{font-size:11px;color:#6b7280;margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* Now-serving controller card */
+.ctrl-card{background:#fff;border-radius:14px;padding:18px 14px;margin-bottom:14px;box-shadow:var(--shadow);text-align:center;}
+.ctrl-now-lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;}
+.ctrl-now-num{font-family:'DM Serif Display',serif;font-size:64px;font-weight:700;line-height:1;color:var(--blue);transition:all .3s;}
+.ctrl-now-num.bump{animation:bump 0.35s cubic-bezier(0.175,0.885,0.32,1.275);}
+@keyframes bump{0%{transform:scale(0.85);opacity:0.4}100%{transform:scale(1);opacity:1}}
+.ctrl-row{display:grid;grid-template-columns:1fr 2fr 1fr;gap:6px;margin-top:14px;}
+.ctrl-btn{padding:11px 4px;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;transition:transform .12s;}
+.ctrl-btn:active{transform:scale(0.95);}
+.ctrl-prev{background:#fef3c7;color:#92400e;}
+.ctrl-next{background:linear-gradient(135deg,var(--green),#0d9652);color:#fff;font-size:15px;box-shadow:0 4px 12px rgba(10,124,66,0.3);}
+.ctrl-reset{background:#fee2e2;color:#991b1b;}
+.ctrl-set-row{display:flex;gap:6px;margin-top:8px;}
+.ctrl-set-input{flex:1;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:16px;font-weight:700;text-align:center;color:var(--blue);font-family:'DM Sans',sans-serif;outline:none;}
+.ctrl-set-input:focus{border-color:var(--mid);}
+.ctrl-set-go{padding:10px 18px;background:var(--mid);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;}
+
+/* Call-this button on rows */
+.btn-call-this{background:linear-gradient(135deg,var(--green),#0d9652);color:#fff;font-weight:700;}
+.btn-call-this:hover{background:var(--green);}
+
+.token-row{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow);display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;}
+.token-row.now{border-left:4px solid var(--amber);background:#fffbeb;}
+.token-row.done{opacity:0.55;}
+.token-row.no-show{border-left:4px solid var(--red);background:#fef2f2;}
+.token-num{font-family:'DM Serif Display',serif;font-size:34px;font-weight:700;color:var(--blue);min-width:64px;text-align:center;background:#f1f5f9;border-radius:10px;padding:6px 10px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.token-num:hover{border-color:var(--mid);background:#dbeafe;}
+.token-info{display:flex;flex-direction:column;gap:3px;font-size:13px;min-width:0;}
+.token-info .name{font-weight:700;font-size:15px;color:var(--blue);}
+.token-info .meta{color:#6b7280;font-size:12px;}
+.token-info .scan{color:#1e40af;font-size:12px;font-weight:600;}
+.token-actions{display:flex;flex-direction:column;gap:5px;}
+.token-actions button,.token-actions a{padding:6px 10px;border:none;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;text-align:center;display:inline-block;}
+.btn-renum{background:#dbeafe;color:#1e40af;}
+.btn-noshow{background:#fee2e2;color:#991b1b;}
+.btn-restore{background:#dcfce7;color:#14532d;}
+.btn-call{background:#dcfce7;color:#14532d;}
+
+.empty{text-align:center;padding:40px 20px;color:#9ca3af;font-size:14px;background:#fff;border-radius:14px;box-shadow:var(--shadow);}
+
+.overlay{position:fixed;inset:0;background:rgba(14,30,61,0.85);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+.overlay.show{display:flex;}
+.modal{background:#fff;border-radius:18px;padding:24px;max-width:380px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,0.3);}
+.modal h2{font-family:'DM Serif Display',serif;color:var(--blue);font-size:20px;margin-bottom:6px;}
+.modal p{color:#6b7280;font-size:13px;margin-bottom:14px;line-height:1.5;}
+.modal input{width:100%;padding:14px;border:2px solid #d1d5db;border-radius:10px;font-size:24px;font-weight:700;text-align:center;color:var(--blue);font-family:'DM Sans',sans-serif;}
+.modal-actions{display:flex;gap:8px;margin-top:14px;}
+.modal-actions button{flex:1;padding:11px;border:none;border-radius:9px;font-weight:600;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-ok{background:var(--green);color:#fff;}
+.btn-cancel{background:#f3f4f6;color:#374151;}
+.warn{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px;font-size:12px;color:#78350f;margin-top:10px;display:none;}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:#1a3a6b;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;transition:transform 0.3s;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,0.25);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* Floating action button */
+.fab{position:fixed;bottom:24px;right:20px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--green),#0d9652);color:#fff;border:none;cursor:pointer;font-size:30px;font-weight:300;box-shadow:0 8px 24px rgba(10,124,66,0.4);z-index:50;transition:transform .15s;display:flex;align-items:center;justify-content:center;}
+.fab:active{transform:scale(0.93);}
+
+/* Source badge */
+.src-badge{display:inline-block;font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;margin-left:5px;vertical-align:middle;}
+.src-online{background:#e0e7ff;color:#3730a3;}
+.src-phone{background:#fef3c7;color:#92400e;}
+.src-walkin{background:#d1fae5;color:#065f46;}
+.src-paper{background:#f3e8ff;color:#6b21a8;}
+
+/* Add booking modal — wider */
+.modal-wide{max-width:440px;max-height:90vh;overflow-y:auto;}
+.modal-wide h2{margin-bottom:14px;}
+.form-row{margin-bottom:11px;}
+.form-row.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.form-row label{display:block;font-size:11.5px;font-weight:700;color:#374151;margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase;}
+.form-row input,.form-row select{width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--blue);background:#fff;outline:none;transition:border-color .15s;}
+.form-row input:focus,.form-row select:focus{border-color:var(--mid);box-shadow:0 0 0 3px rgba(37,87,167,0.08);}
+.form-row input.err,.form-row select.err{border-color:var(--red);}
+.gender-grp,.source-grp{display:flex;gap:6px;}
+.gender-grp button,.source-grp button{flex:1;padding:9px 6px;border:1.5px solid #d1d5db;border-radius:8px;background:#fff;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.gender-grp button.sel,.source-grp button.sel{border-color:var(--mid);background:#dbeafe;color:#1e40af;}
+.slot-pick{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;max-height:140px;overflow-y:auto;padding:4px;background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;}
+.slot-pick button{padding:7px 4px;border:1.5px solid #d1d5db;border-radius:6px;background:#fff;font-size:11px;font-weight:600;color:#374151;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.slot-pick button.sel{border-color:var(--mid);background:var(--mid);color:#fff;}
+.slot-pick button.full{background:#fef2f2;color:#9ca3af;border-color:#fecaca;text-decoration:line-through;}
+.slot-pick button.one{border-color:var(--amber);color:#78350f;background:#fffbeb;}
+.scan-pick{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.scan-pick button{padding:8px 6px;border:1.5px solid #d1d5db;border-radius:7px;background:#fff;font-size:11.5px;font-weight:600;color:#374151;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left;}
+.scan-pick button.sel{border-color:var(--mid);background:#dbeafe;color:#1e40af;}
+
+@media(max-width:480px){
+  .token-row{grid-template-columns:auto 1fr;}
+  .token-actions{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;}
+  .token-actions button,.token-actions a{flex:1;min-width:80px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Reception · Manage Tokens</h1>
+    <div class="sub">Dr. L.G. Krishna Ultrasound Clinic</div>
+  </div>
+  <div class="sync-dot" id="syncDot" title="Firebase connected"></div>
+</div>
+
+<div class="body">
+
+  <!-- NOW SERVING — token controller -->
+  <div class="ctrl-card">
+    <div class="ctrl-now-lbl">NOW SERVING</div>
+    <div class="ctrl-now-num" id="ctrlNum">–</div>
+    <div class="ctrl-row">
+      <button class="ctrl-btn ctrl-prev" onclick="goPrev()">◀ Prev</button>
+      <button class="ctrl-btn ctrl-next" onclick="callNext()">▶ CALL NEXT</button>
+      <button class="ctrl-btn ctrl-reset" onclick="resetDay()">🔄 Reset</button>
+    </div>
+    <div class="ctrl-set-row">
+      <input type="number" class="ctrl-set-input" id="ctrlSetInput" placeholder="Set to #" min="0" max="999"
+             onkeydown="if(event.key==='Enter')setQueueTo()"/>
+      <button class="ctrl-set-go" onclick="setQueueTo()">SET</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input type="date" id="dateInput" onchange="loadDay()"/>
+    <button onclick="loadDay()">⟳ Refresh</button>
+  </div>
+
+  <div class="summary">
+    <div class="summary-card"><div class="num" id="sumTotal">–</div><div class="lbl">Booked</div></div>
+    <div class="summary-card"><div class="num" id="sumDone">–</div><div class="lbl">Served</div></div>
+    <div class="summary-card"><div class="num" id="sumWaiting">–</div><div class="lbl">Waiting</div></div>
+  </div>
+
+  <div id="list">
+    <div class="empty">Loading bookings…</div>
+  </div>
+
+</div>
+
+<div class="overlay" id="renumOverlay">
+  <div class="modal">
+    <h2>Change Token Number</h2>
+    <p id="renumMsg">Enter a new number. If it's already taken, the two will be swapped.</p>
+    <input type="number" id="renumInput" min="1" max="999" inputmode="numeric"/>
+    <div class="warn" id="renumWarn"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeRenum()">Cancel</button>
+      <button class="btn-ok" onclick="doRenum()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Booking modal -->
+<div class="overlay" id="addOverlay">
+  <div class="modal modal-wide">
+    <h2>+ Add Manual Booking</h2>
+    <p style="font-size:12px;color:#6b7280;margin-bottom:14px;">Phone booking, walk-in, or paper record. Goes into the same queue + sheet as online bookings.</p>
+
+    <div class="form-row">
+      <label>Patient Name *</label>
+      <input type="text" id="mbk-name" placeholder="Full name"/>
+    </div>
+
+    <div class="form-row two">
+      <div>
+        <label>Phone *</label>
+        <input type="tel" id="mbk-phone" maxlength="10" placeholder="10-digit"/>
+      </div>
+      <div>
+        <label>Age</label>
+        <input type="number" id="mbk-age" min="1" max="120" placeholder="years"/>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Gender</label>
+      <div class="gender-grp">
+        <button type="button" data-g="Male" onclick="setAddGender(this,'Male')">♂ Male</button>
+        <button type="button" data-g="Female" onclick="setAddGender(this,'Female')">♀ Female</button>
+        <button type="button" data-g="Other" onclick="setAddGender(this,'Other')">Other</button>
+      </div>
+    </div>
+
+    <div class="form-row two">
+      <div>
+        <label>Date *</label>
+        <input type="date" id="mbk-date" onchange="loadAddSlots()"/>
+      </div>
+      <div>
+        <label>Source</label>
+        <div class="source-grp">
+          <button type="button" class="sel" onclick="setAddSource(this,'phone')">📞 Phone</button>
+          <button type="button" onclick="setAddSource(this,'walkin')">🚶 Walk-in</button>
+          <button type="button" onclick="setAddSource(this,'paper')">📋 Paper</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Time Slot *</label>
+      <div class="slot-pick" id="mbk-slots"><span style="grid-column:1/-1;color:#9ca3af;font-size:12px;text-align:center;padding:8px;">Pick a date first…</span></div>
+    </div>
+
+    <div class="form-row">
+      <label>Scan Type *</label>
+      <div class="scan-pick" id="mbk-scans"></div>
+    </div>
+
+    <div class="warn" id="addWarn"></div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+      <button class="btn-ok" id="addSaveBtn" onclick="submitManual()">Save Booking</button>
+    </div>
+  </div>
+</div>
+
+<button class="fab" onclick="openAddModal()" title="Add manual booking">+</button>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* Same Firebase project as sankhya.html */
+const DB = 'https://drlgk-clinic-live-token-default-rtdb.asia-southeast1.firebasedatabase.app';
+const QUEUE = '/drlgk-queue';
+/* Same Apps Script as booking.html — keeps slot math honest */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyg-2EA3yOYJSNmz1wNIrbUoj3CmkYABsUx-F6zzLDT0G9Gpa_TE9XQHtgWYc23D7NK/exec';
+
+/* ── Firebase anonymous auth (invisible to user) ───────────────────
+   Signs in anonymously on page load, gets a 1hr token, refreshes
+   automatically before expiry. Token rides on every DB fetch.       */
+const FB_API_KEY = 'AIzaSyCO-TULF1d8SOx-aaE5humfmupk75llizs';
+let _fbTok = null, _fbExp = 0, _fbBackoffUntil = 0;
+async function fbAuth(){
+  // Don't hammer if we're in a failure backoff window
+  if (Date.now() < _fbBackoffUntil) return;
+  try {
+    const r = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+FB_API_KEY,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({returnSecureToken:true})
+    });
+    if(!r.ok) throw new Error('auth status '+r.status);
+    const j = await r.json();
+    _fbTok = j.idToken;
+    _fbExp = Date.now() + (parseInt(j.expiresIn||3600) - 60) * 1000;
+    _fbBackoffUntil = 0;
+  } catch(e){
+    console.warn('Firebase auth failed:',e.message||e);
+    _fbTok = null;
+    _fbBackoffUntil = Date.now() + 30000; // wait 30s before retrying
+  }
+}
+async function fbT(){
+  if(!_fbTok || Date.now() >= _fbExp) await fbAuth();
+  return _fbTok || '';
+}
+function fbQ(sep){ return _fbTok ? (sep||'?')+'auth='+encodeURIComponent(_fbTok) : ''; }
+
+/* Local server mirror — same targets sankhya.html uses for the TV display */
+const _USB_TS = 'http://100.77.123.73:8080';
+const _LOCAL = (typeof window!=='undefined' && (window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'))
+  ? 'http://localhost:8080'
+  : (typeof window!=='undefined' ? 'http://'+window.location.hostname+':8080' : _USB_TS);
+
+async function _mirrorQueueNow(token){
+  const body = JSON.stringify({token:String(token)});
+  const opts = {method:'POST',headers:{'Content-Type':'application/json'},body,signal:AbortSignal.timeout(3000)};
+  const targets = [...new Set([_LOCAL, _USB_TS, 'http://100.120.242.40:8080'])];
+  await Promise.allSettled(targets.map(url => fetch(url+'/api/queue/now', opts)));
+}
+async function _mirrorQueueReset(){
+  const today=new Date(),dd=String(today.getDate()).padStart(2,'0'),mm=String(today.getMonth()+1).padStart(2,'0'),yyyy=today.getFullYear();
+  const body = JSON.stringify({list:[],now:{token:'-',name:'',scan:''},serial:1,date:`${dd}/${mm}/${yyyy}`});
+  const opts = {method:'POST',headers:{'Content-Type':'application/json'},body,signal:AbortSignal.timeout(3000)};
+  const targets = [...new Set([_LOCAL, _USB_TS, 'http://100.120.242.40:8080'])];
+  await Promise.allSettled(targets.map(url => fetch(url+'/api/queue', opts)));
+}
+
+const SLOTS = ['09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+const SCAN_TYPES = ['Early Pregnancy (EP)','NT Scan','Anomaly Scan','Growth Scan','Fetal Echo','Anomaly + Echo','Abdomen & Pelvis','KUB Scan','Thyroid Scan','Breast Scan','Scrotum Scan','Other'];
+
+let curDate = '';
+let bookings = {};
+let nowServing = 0;
+let renumFromKey = null;
+let pollTimer = null;
+let addSelSlot = '';
+let addSelScan = '';
+let addSelGender = '';
+let addSelSource = 'phone';
+
+function todayStr(){
+  const t=new Date();
+  return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+}
+
+async function dbGet(path){
+  await fbT();
+  const r=await fetch(DB+path+'.json'+fbQ(),{cache:'no-store',signal:AbortSignal.timeout(5000)});
+  if(!r.ok) throw new Error('GET '+path+' ('+r.status+')');
+  return r.json();
+}
+async function dbPut(path,val){
+  await fbT();
+  const r=await fetch(DB+path+'.json'+fbQ(),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(val),signal:AbortSignal.timeout(5000)});
+  if(!r.ok) throw new Error('PUT '+path+' ('+r.status+')');
+  return r.json();
+}
+async function dbDel(path){
+  await fbT();
+  const r=await fetch(DB+path+'.json'+fbQ(),{method:'DELETE',signal:AbortSignal.timeout(5000)});
+  if(!r.ok) throw new Error('DEL '+path+' ('+r.status+')');
+  return r.json();
+}
+
+function setSyncOk(ok){ document.getElementById('syncDot').style.background = ok?'#4caf50':'#ef4444'; }
+
+async function loadDay(){
+  curDate = document.getElementById('dateInput').value || todayStr();
+  document.getElementById('dateInput').value = curDate;
+  try {
+    const data = await dbGet('/drlgk-bookings/'+curDate+'/tokens');
+    bookings = data || {};
+    const q = await dbGet('/drlgk-queue');
+    nowServing = (q && q.current) || 0;
+    setSyncOk(true);
+  } catch(e){
+    setSyncOk(false);
+  }
+  render();
+}
+
+function render(){
+  const list = document.getElementById('list');
+  // Update big now-serving display with bump animation when value changes
+  const ctrlEl = document.getElementById('ctrlNum');
+  const newDisplay = nowServing || '–';
+  if (ctrlEl.textContent !== String(newDisplay)){
+    ctrlEl.classList.remove('bump'); void ctrlEl.offsetWidth; ctrlEl.classList.add('bump');
+  }
+  ctrlEl.textContent = newDisplay;
+
+  const keys = Object.keys(bookings).map(k=>parseInt(k)).filter(n=>!isNaN(n)).sort((a,b)=>a-b);
+
+  if (!keys.length){
+    list.innerHTML = '<div class="empty">No advance bookings for this date.<br/><small>New bookings will appear here in real time.</small></div>';
+    document.getElementById('sumTotal').textContent = '0';
+    document.getElementById('sumDone').textContent = '0';
+    document.getElementById('sumWaiting').textContent = '0';
+    return;
+  }
+
+  let done=0, waiting=0;
+  keys.forEach(k=>{
+    const b=bookings[k];
+    if (b.status==='no_show') return;
+    if (k<=nowServing) done++; else waiting++;
+  });
+
+  document.getElementById('sumTotal').textContent = keys.length;
+  document.getElementById('sumDone').textContent = done;
+  document.getElementById('sumWaiting').textContent = waiting;
+
+  list.innerHTML = keys.map(k=>{
+    const b = bookings[k];
+    let cls = 'token-row';
+    if (b.status==='no_show') cls += ' no-show';
+    else if (k===nowServing) cls += ' now';
+    else if (k<nowServing) cls += ' done';
+    const phone = (b.phone||'').replace(/\D/g,'');
+    const slotTxt = b.slotDisplay || b.slot || '—';
+    const src = b.source || 'online';
+    const srcLabel = src==='phone'?'📞 PHONE':src==='walkin'?'🚶 WALK-IN':src==='paper'?'📋 PAPER':'🌐 ONLINE';
+    const srcCls = 'src-'+(src==='walkin'?'walkin':src);
+    const statusBadge = b.status==='CONFIRMED' ? '<span style="color:#065f46;font-weight:700;">✅ CONFIRMED</span>' :
+                        b.status==='no_show' ? '<span style="color:#991b1b;font-weight:700;">NO-SHOW</span>' :
+                        b.status==='CANCELLED' ? '<span style="color:#991b1b;font-weight:700;">CANCELLED</span>' :
+                        '<span style="color:#92400e;font-weight:700;">⏳ PENDING</span>';
+    // Show "Call This" only for tokens that haven't been called yet AND aren't no-show
+    const showCallThis = b.status!=='no_show' && k!==nowServing;
+    return `<div class="${cls}">
+      <div class="token-num" onclick="openRenum(${k})" title="Tap to renumber">#${k}</div>
+      <div class="token-info">
+        <div class="name">${esc(b.name||'—')} <span class="src-badge ${srcCls}">${srcLabel}</span><span style="font-weight:400;color:#6b7280;font-size:12px;"> ${b.age?'· '+b.age+'y':''} ${esc(b.gender||'')}</span></div>
+        <div class="scan">${esc(b.scan||'—')}</div>
+        <div class="meta">⏰ ${esc(slotTxt)} · 📞 ${esc(b.phone||'—')}</div>
+        <div class="meta" style="font-size:11px;color:#94a3b8;">Ref: ${esc(b.ref||'—')} · ${statusBadge}</div>
+      </div>
+      <div class="token-actions">
+        ${showCallThis ? `<button class="btn-call-this" onclick="callThis(${k})">▶ Call This</button>` : ''}
+        <button class="btn-renum" onclick="openRenum(${k})">Renumber</button>
+        ${b.status==='no_show'
+          ? '<button class="btn-restore" onclick="restoreBooking('+k+')">Restore</button>'
+          : '<button class="btn-noshow" onclick="markNoShow('+k+')">No-show</button>'}
+        ${phone ? `<a class="btn-call" href="tel:${phone}">📞 Call</a>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
+
+function openRenum(k){
+  renumFromKey = k;
+  const b = bookings[k];
+  document.getElementById('renumMsg').textContent = `Booking #${k} — ${b.name||'—'}. Enter new number. If it's taken, the two will swap.`;
+  document.getElementById('renumInput').value = k;
+  document.getElementById('renumWarn').style.display = 'none';
+  document.getElementById('renumOverlay').classList.add('show');
+  setTimeout(()=>{ const i=document.getElementById('renumInput'); i.focus(); i.select(); },50);
+}
+function closeRenum(){ document.getElementById('renumOverlay').classList.remove('show'); renumFromKey=null; }
+
+async function doRenum(){
+  const newK = parseInt(document.getElementById('renumInput').value);
+  const warn = document.getElementById('renumWarn');
+  if (!newK || newK<1 || newK>999){ warn.style.display='block'; warn.textContent='Enter a number between 1 and 999.'; return; }
+  if (newK === renumFromKey){ closeRenum(); return; }
+  const oldK = renumFromKey;
+  const moving = bookings[oldK];
+  const occupant = bookings[newK];
+  try {
+    if (occupant){
+      await dbPut('/drlgk-bookings/'+curDate+'/tokens/'+oldK, occupant);
+      await dbPut('/drlgk-bookings/'+curDate+'/tokens/'+newK, moving);
+      toast(`✅ Swapped #${oldK} ⇄ #${newK}`);
+    } else {
+      await dbPut('/drlgk-bookings/'+curDate+'/tokens/'+newK, moving);
+      await dbDel('/drlgk-bookings/'+curDate+'/tokens/'+oldK);
+      toast(`✅ #${oldK} → #${newK}`);
+    }
+    closeRenum();
+    await loadDay();
+  } catch(e){
+    warn.style.display='block'; warn.textContent='Save failed: '+e.message+'. Try again.';
+  }
+}
+
+async function markNoShow(k){
+  if (!confirm(`Mark #${k} (${bookings[k].name||''}) as NO-SHOW?\n\nCan be restored later.`)) return;
+  try {
+    bookings[k].status = 'no_show';
+    bookings[k].noShowAt = new Date().toISOString();
+    await dbPut('/drlgk-bookings/'+curDate+'/tokens/'+k, bookings[k]);
+    toast('Marked #'+k+' as no-show');
+    render();
+  } catch(e){ toast('❌ '+e.message); }
+}
+
+async function restoreBooking(k){
+  try {
+    delete bookings[k].status;
+    delete bookings[k].noShowAt;
+    await dbPut('/drlgk-bookings/'+curDate+'/tokens/'+k, bookings[k]);
+    toast('#'+k+' restored');
+    render();
+  } catch(e){ toast('❌ '+e.message); }
+}
+
+function toast(m){
+  const t=document.getElementById('toast'); t.textContent=m;
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){ if(pollTimer) clearInterval(pollTimer); }
+  else { startPoll(); }
+});
+function startPoll(){ if(pollTimer) clearInterval(pollTimer); pollTimer=setInterval(loadDay,7000); }
+
+// ── TOKEN CONTROLLER ACTIONS (sync to Firebase + local TV mirror) ─────
+async function _writeQueueCurrent(n){
+  // Optimistic local update
+  nowServing = n;
+  render();
+  // Mirror to local server immediately so TV updates without waiting for Firebase
+  _mirrorQueueNow(n);
+  // Then Firebase
+  const now = new Date().toISOString();
+  try {
+    await dbPut(QUEUE+'/current', n);
+    await dbPut(QUEUE+'/updatedAt', now);
+    // Append to log (keep last 50)
+    const q = await dbGet(QUEUE);
+    const log = ((q && q.log) || []).concat([{num:n, ts:now}]).slice(-50);
+    await dbPut(QUEUE+'/log', log);
+    if (n > ((q && q.total) || 0)) {
+      await dbPut(QUEUE+'/total', n);
+    }
+    setSyncOk(true);
+  } catch(e){
+    setSyncOk(false);
+  }
+}
+
+async function callNext(){
+  const next = (nowServing || 0) + 1;
+  // Skip over no-show numbers if any
+  let target = next;
+  while (bookings[target] && bookings[target].status === 'no_show') target++;
+  await _writeQueueCurrent(target);
+  toast(`✅ Token #${target} called`);
+}
+
+async function goPrev(){
+  if (!nowServing || nowServing <= 1){ toast('Already at #1'); return; }
+  await _writeQueueCurrent(nowServing - 1);
+  toast(`◀ Back to #${nowServing}`);
+}
+
+async function setQueueTo(){
+  const v = parseInt(document.getElementById('ctrlSetInput').value);
+  if (isNaN(v) || v < 0 || v > 999){ toast('Enter a number 0–999'); return; }
+  await _writeQueueCurrent(v);
+  document.getElementById('ctrlSetInput').value = '';
+  toast(`📺 Set to #${v}`);
+}
+
+async function callThis(n){
+  await _writeQueueCurrent(n);
+  toast(`▶ Jumped to #${n}`);
+}
+
+async function resetDay(){
+  if (!confirm('Reset queue to 0 and clear today\'s call log?\n\nThis only resets the now-serving counter.\nAdvance bookings stay intact.')) return;
+  try {
+    await dbPut(QUEUE, { current:0, total:0, updatedAt:new Date().toISOString(), log:[] });
+    _mirrorQueueReset();
+    nowServing = 0;
+    render();
+    toast('🔄 Queue reset');
+  } catch(e){ toast('❌ Reset failed: '+e.message); }
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(document.getElementById('renumOverlay').classList.contains('show')) closeRenum();
+    if(document.getElementById('addOverlay').classList.contains('show')) closeAddModal();
+  }
+});
+
+// ── ADD MANUAL BOOKING ────────────────────────────
+function fmtT(t){ const[h,m]=t.split(':').map(Number),ap=h<12?'AM':'PM',hh=h>12?h-12:h===0?12:h; return `${hh}:${m.toString().padStart(2,'0')} ${ap}`; }
+
+function openAddModal(){
+  // Reset form
+  document.getElementById('mbk-name').value='';
+  document.getElementById('mbk-phone').value='';
+  document.getElementById('mbk-age').value='';
+  document.getElementById('mbk-date').value=todayStr();
+  document.getElementById('mbk-date').min=todayStr();
+  document.getElementById('addWarn').style.display='none';
+  addSelSlot=''; addSelScan=''; addSelGender=''; addSelSource='phone';
+  // Reset gender + source buttons
+  document.querySelectorAll('.gender-grp button').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('.source-grp button').forEach((b,i)=>b.classList.toggle('sel',i===0));
+  // Render scan chips
+  document.getElementById('mbk-scans').innerHTML = SCAN_TYPES.map(s=>`<button type="button" onclick="setAddScan(this,'${esc(s)}')">${esc(s)}</button>`).join('');
+  // Load slot availability
+  loadAddSlots();
+  document.getElementById('addOverlay').classList.add('show');
+  setTimeout(()=>document.getElementById('mbk-name').focus(),80);
+}
+
+function closeAddModal(){ document.getElementById('addOverlay').classList.remove('show'); }
+
+function setAddGender(btn,g){
+  addSelGender=g;
+  document.querySelectorAll('.gender-grp button').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function setAddSource(btn,s){
+  addSelSource=s;
+  document.querySelectorAll('.source-grp button').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function setAddScan(btn,s){
+  addSelScan=s;
+  document.querySelectorAll('.scan-pick button').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function setAddSlot(btn,s){
+  if(btn.classList.contains('full')) return;
+  addSelSlot=s;
+  document.querySelectorAll('.slot-pick button').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+async function loadAddSlots(){
+  const d=document.getElementById('mbk-date').value;
+  const wrap=document.getElementById('mbk-slots');
+  if(!d){ wrap.innerHTML='<span style="grid-column:1/-1;color:#9ca3af;font-size:12px;text-align:center;padding:8px;">Pick a date first…</span>'; return; }
+  // Sundays — clinic closed (still allow admin override though)
+  const isSun = new Date(d+'T00:00:00').getDay()===0;
+  let slotData = {};
+  try {
+    const r = await fetch(SCRIPT_URL+'?action=slots&date='+d, {signal:AbortSignal.timeout(5000)});
+    const j = await r.json();
+    slotData = j.slots || {};
+  } catch(e){ slotData = {}; }
+  wrap.innerHTML = SLOTS.map(s=>{
+    const c = slotData[s]||0, av = 2-c;
+    let cls='', label=fmtT(s);
+    if(av<=0){ cls='full'; label += ' (full)'; }
+    else if(av===1){ cls='one'; label += ' (1)'; }
+    return `<button type="button" class="${cls}" onclick="setAddSlot(this,'${s}')">${label}</button>`;
+  }).join('');
+  if(isSun){
+    wrap.insertAdjacentHTML('afterbegin','<span style="grid-column:1/-1;color:#92400e;font-size:11px;text-align:center;padding:4px;background:#fffbeb;border-radius:4px;margin-bottom:4px;">⚠ Sunday — clinic normally closed. Admin override allowed.</span>');
+  }
+  addSelSlot='';
+}
+
+async function submitManual(){
+  const name = document.getElementById('mbk-name').value.trim();
+  const phone = document.getElementById('mbk-phone').value.trim();
+  const age = document.getElementById('mbk-age').value.trim();
+  const date = document.getElementById('mbk-date').value;
+  const warn = document.getElementById('addWarn');
+
+  if(!name || name.length<2){ warn.style.display='block'; warn.textContent='Enter patient name.'; return; }
+  if(!/^\d{10}$/.test(phone)){ warn.style.display='block'; warn.textContent='Enter a valid 10-digit phone number.'; return; }
+  if(!date){ warn.style.display='block'; warn.textContent='Pick a date.'; return; }
+  if(!addSelSlot){ warn.style.display='block'; warn.textContent='Pick a time slot.'; return; }
+  if(!addSelScan){ warn.style.display='block'; warn.textContent='Pick a scan type.'; return; }
+  warn.style.display='none';
+
+  const btn=document.getElementById('addSaveBtn');
+  btn.disabled=true; btn.textContent='Saving…';
+
+  // Claim queue number from Firebase (same logic as booking.html)
+  let queueNum = 1;
+  try {
+    const v = await dbGet('/drlgk-bookings/'+date+'/next_seq');
+    queueNum = (typeof v==='number' && v>0) ? v : 1;
+    await dbPut('/drlgk-bookings/'+date+'/next_seq', queueNum+1);
+  } catch(e){ /* fallback: queueNum stays 1 */ }
+
+  const ref = 'LGK-'+date.replace(/-/g,'')+'-'+String(Math.floor(Math.random()*900)+100);
+  const bk = {
+    ref, queueNum, name, age:age||'', gender:addSelGender||'',
+    phone, email:'', address:'',
+    scan: addSelScan, date, slot:addSelSlot, slotDisplay:fmtT(addSelSlot),
+    upiTxn:'', advance:0, sameDaySurcharge:false,
+    status:'CONFIRMED',           // admin-entered → already confirmed
+    source: addSelSource,          // 'phone' | 'walkin' | 'paper'
+    submittedAt: new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})
+  };
+
+  // 1. Mirror to Apps Script (so booking.html slot math stays honest)
+  fetch(SCRIPT_URL,{
+    method:'POST', mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(bk)
+  }).catch(()=>{});
+
+  // 2. Write to Firebase under the queue number
+  try {
+    await dbPut('/drlgk-bookings/'+date+'/tokens/'+queueNum, bk);
+  } catch(e){
+    btn.disabled=false; btn.textContent='Save Booking';
+    warn.style.display='block'; warn.textContent='Firebase write failed: '+e.message;
+    return;
+  }
+
+  toast(`✅ Added #${queueNum} – ${name}`);
+  closeAddModal();
+  btn.disabled=false; btn.textContent='Save Booking';
+  if(date===curDate) await loadDay();
+}
+
+// Init
+document.getElementById('dateInput').value = todayStr();
+fbAuth().then(()=>{ loadDay(); startPoll(); });
+</script>
+</body>
+</html>
