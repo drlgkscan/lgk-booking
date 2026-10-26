@@ -111,6 +111,16 @@ textarea{resize:vertical;min-height:70px}
 .btn-wa:hover{background:#1ebe5d}
 .brow{display:flex;gap:10px;margin-top:14px}
 .brow .btn{flex:1}
+.btn-upi{display:block;background:var(--g1);color:#fff;text-decoration:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;margin:6px auto 0;max-width:340px}
+.amt-why{font-size:12px;color:#14532d;background:#fff;border:1px dashed #86efac;border-radius:8px;padding:7px 10px;margin:0 auto 10px;max-width:380px;line-height:1.5}
+.utr-help{font-size:11.5px;color:#475569;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;margin-top:6px;line-height:1.7}
+.fallback{background:#fff;border:1px solid #d1fae5;border-radius:12px;padding:10px 12px;margin:12px auto 4px;max-width:420px;text-align:left}
+.fb-title{font-size:12px;font-weight:700;color:var(--g1);margin-bottom:6px}
+.fb-row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:#334155;padding:5px 0;border-top:1px dashed #e2e8f0}
+.fb-btn{flex-shrink:0;background:var(--g3);color:var(--g1);border:1.5px solid var(--g1);border-radius:8px;padding:7px 10px;font-weight:800;font-size:12.5px;font-family:'Nunito',sans-serif;cursor:pointer}
+.fb-note{font-size:11px;color:#64748b;margin-top:6px;line-height:1.5}
+.note-down{background:#fff7ed;border:1.5px solid #fdba74;border-radius:10px;padding:9px 12px;font-size:12.5px;color:#7c2d12;line-height:1.6;margin:6px 0 2px}
+.submit-err{display:none;background:#fef2f2;border:2px solid #fca5a5;border-radius:12px;padding:12px 14px;margin-top:12px;font-size:13px;color:#991b1b;line-height:1.6}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a2e1e;color:#fff;padding:11px 20px;border-radius:30px;font-size:13px;z-index:9999;transition:transform .3s;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0)}
 @media(max-width:380px){.slot-grid{grid-template-columns:repeat(2,1fr)}.schips,.fr.two{grid-template-columns:1fr}}
@@ -139,6 +149,15 @@ textarea{resize:vertical;min-height:70px}
 
 <!-- STEP 1 -->
 <div class="panel active" id="step1">
+  <details class="card" style="padding:14px 18px">
+    <summary style="cursor:pointer;font-weight:700;color:var(--g1)">🔎 Already booked? Check status / ಬುಕಿಂಗ್ ಸ್ಥಿತಿ ನೋಡಿ</summary>
+    <div class="fr two" style="margin-top:12px">
+      <div><label>Phone / ಫೋನ್</label><input type="tel" id="st-phone" maxlength="10" placeholder="10-digit"/></div>
+      <div><label>Booking Reference / ಉಲ್ಲೇಖ</label><input type="text" id="st-ref" placeholder="LGK-2026…"/></div>
+    </div>
+    <button type="button" class="btn btn-o" onclick="checkStatus()">Check / ನೋಡಿ</button>
+    <div id="st-out" style="margin-top:10px;font-size:13px;line-height:1.6"></div>
+  </details>
   <div class="card">
     <div class="ctitle"><span class="cicon">👤</span>Patient Details / ರೋಗಿಯ ವಿವರ</div>
     <div class="fr">
@@ -210,8 +229,10 @@ textarea{resize:vertical;min-height:70px}
   <div class="policy-box">
     <div class="ptitle">📋 Booking Policy / ಬುಕಿಂಗ್ ನಿಯಮಗಳು</div>
     <ul>
-      <li>₹500 advance is <strong>non-refundable</strong> / ₹500 ಮುಂಗಡ ಹಿಂತಿರುಗಿಸಲಾಗದು</li>
-      <li><strong>Same day booking: ₹300 extra convenience charge</strong> (NOT part of scan fee) / ಅದೇ ದಿನ ಬುಕಿಂಗ್: ₹300 ಹೆಚ್ಚುವರಿ ಶುಲ್ಕ (ಸ್ಕ್ಯಾನ್ ಶುಲ್ಕದ ಭಾಗ ಅಲ್ಲ)</li>
+      <li>Advance today: <strong class="adv-amt">₹500.xx</strong> (₹500 + today's date in paise) — <strong>non-refundable</strong>, adjusted in your scan fee / ಮುಂಗಡ <strong class="adv-amt">₹500.xx</strong> ಹಿಂತಿರುಗಿಸಲಾಗದು, ಸ್ಕ್ಯಾನ್ ಶುಲ್ಕದಲ್ಲಿ ಹೊಂದಿಸಲಾಗುವುದು</li>
+      <li>Note down your <strong>Booking Reference</strong> and <strong>UTR</strong> — quote them for any query / ಬುಕಿಂಗ್ ಉಲ್ಲೇಖ ಸಂಖ್ಯೆ ಮತ್ತು UTR ಬರೆದಿಟ್ಟುಕೊಳ್ಳಿ</li>
+      <li><strong>Booking is NOT confirmed until we verify your payment.</strong> Token PDF comes only after that / ಪಾವತಿ ಪರಿಶೀಲನೆಯ ನಂತರವೇ ಬುಕಿಂಗ್ ಖಚಿತ</li>
+      <li><strong>Balance at the clinic: UPI only</strong> — we cannot give change / ಉಳಿದ ಮೊತ್ತ ಕ್ಲಿನಿಕ್‌ನಲ್ಲಿ <strong>UPI ಮೂಲಕ ಮಾತ್ರ</strong> — ಚಿಲ್ಲರೆ ಕೊಡಲಾಗುವುದಿಲ್ಲ</li>
       <li>Booking available <strong>today to next 30 days only</strong> / ಇಂದಿನಿಂದ 30 ದಿನಗಳ ವರೆಗೆ ಮಾತ್ರ</li>
       <li>To cancel: call <strong>7204764969</strong> minimum 2 hours before / ರದ್ದು ಮಾಡಲು 2 ಗಂಟೆ ಮೊದಲು ಕರೆ ಮಾಡಿ</li>
       <li>No reschedule — cancel &amp; rebook fresh / ಮರು-ಶೆಡ್ಯೂಲ್ ಇಲ್ಲ — ಹೊಸ ಬುಕಿಂಗ್ ಮಾಡಿ</li>
@@ -232,8 +253,8 @@ textarea{resize:vertical;min-height:70px}
       <div class="ferr" id="e-date">Please select a date / ದಿನಾಂಕ ಆಯ್ಕೆ ಮಾಡಿ</div>
       <div class="sameday-alert" id="sameday-alert">
         <div class="sd-title">⚡ Same Day Booking / ಅದೇ ದಿನ ಬುಕಿಂಗ್</div>
-        You have selected today's date. An additional convenience charge applies.<br/>
-        ನೀವು ಇಂದಿನ ದಿನಾಂಕ ಆಯ್ಕೆ ಮಾಡಿದ್ದೀರಿ. ಹೆಚ್ಚುವರಿ ಅರ್ಜೆಂಟ್ ಶುಲ್ಕ ಅನ್ವಯಿಸುತ್ತದೆ.
+        You have selected today. The advance is non-refundable, even if you cannot come.<br/>
+        ನೀವು ಇಂದಿನ ದಿನಾಂಕ ಆಯ್ಕೆ ಮಾಡಿದ್ದೀರಿ. ಬರಲಾಗದಿದ್ದರೂ ಮುಂಗಡ ಹಿಂತಿರುಗಿಸಲಾಗದು.
       </div>
     </div>
     <div id="slots-section"></div>
@@ -251,48 +272,59 @@ textarea{resize:vertical;min-height:70px}
   <div class="card">
     <div class="ctitle"><span class="cicon">💳</span>Pay Advance / ಮುಂಗಡ ಪಾವತಿ</div>
 
-    <!-- SAME DAY SEAL — shown only for same-day bookings -->
-    <div class="sameday-seal" id="sameday-seal">
-      <div class="sd-seal-title">⚡ SAME DAY BOOKING / ಅದೇ ದಿನ ಬುಕಿಂಗ್</div>
-      <div class="sd-seal-kn">Urgent convenience charge applicable / ಅರ್ಜೆಂಟ್ ಸೌಲಭ್ಯ ಶುಲ್ಕ ಅನ್ವಯಿಸುತ್ತದೆ</div>
-      <div class="sd-breakdown">
-        <div class="row"><span>Part payment (advance toward scan) / ಮುಂಗಡ</span><span>₹500</span></div>
-        <div class="row"><span>Same day convenience charge / ಅರ್ಜೆಂಟ್ ಶುಲ್ಕ</span><span>₹300</span></div>
-        <div class="row total"><span>Total payable now / ಈಗ ಪಾವತಿಸಬೇಕಾದ ಮೊತ್ತ</span><span>₹800</span></div>
-      </div>
-      <div class="sd-note">
-        ⚠️ ₹300 same day charge is <strong>NOT part of your scan fee</strong> and will <strong>NOT be adjusted</strong> against clinic charges on the day of scan.<br/>
-        ₹300 ಅರ್ಜೆಂಟ್ ಶುಲ್ಕ ಸ್ಕ್ಯಾನ್ ಶುಲ್ಕದ ಭಾಗ <strong>ಅಲ್ಲ</strong> ಮತ್ತು ಕ್ಲಿನಿಕ್ ಶುಲ್ಕದಲ್ಲಿ ಹೊಂದಾಣಿಕೆ ಆಗುವುದಿಲ್ಲ.
-      </div>
-    </div>
-
     <div class="upi-box">
-      <div class="upi-amt" id="pay-amount">₹500</div>
-      <div class="upi-lbl" id="pay-lbl">Non-refundable advance · UPI only / ಹಿಂತಿರುಗಿಸಲಾಗದ ಮುಂಗಡ</div>
+      <div class="upi-amt" id="pay-amount">₹500.xx</div>
+      <div class="upi-lbl" id="pay-lbl">Pay exactly this amount · UPI only / ಇಷ್ಟೇ ಮೊತ್ತ ಪಾವತಿಸಿ</div>
+      <div class="amt-why" id="amt-why"></div>
+      <a class="btn-upi" id="upi-app-btn" href="#">📲 Pay ₹500.xx in UPI app / UPI ಆ್ಯಪ್‌ನಲ್ಲಿ ಪಾವತಿಸಿ</a>
+      <div class="fallback">
+        <div class="fb-title">If the button does not open your app / ಆ್ಯಪ್ ತೆರೆಯದಿದ್ದರೆ:</div>
+        <div class="fb-row"><span>1. Copy our UPI ID / UPI ID ನಕಲಿಸಿ</span><button type="button" class="fb-btn" onclick="copyUPI()">📋 drsatishscan@upi</button></div>
+        <div class="fb-row"><span>2. Copy the exact amount / ಮೊತ್ತ ನಕಲಿಸಿ</span><button type="button" class="fb-btn" id="copy-amt-btn" onclick="copyAmount()">📋 500.xx</button></div>
+        <div class="fb-row"><span>3. Or save the QR and scan it from your UPI app's gallery / QR ಉಳಿಸಿ, UPI ಆ್ಯಪ್‌ನಲ್ಲಿ ಗ್ಯಾಲರಿಯಿಂದ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</span><button type="button" class="fb-btn" onclick="downloadQR()">⬇ Save QR</button></div>
+        <div class="fb-note">In your UPI app: "Pay to UPI ID" → paste the UPI ID → paste the amount (keep the paise, e.g. .21).<br/>UPI ಆ್ಯಪ್: "UPI ID ಗೆ ಪಾವತಿಸಿ" → UPI ID ಅಂಟಿಸಿ → ಮೊತ್ತ ಅಂಟಿಸಿ (ಪೈಸೆ ಸೇರಿಸಿ).</div>
+      </div>
       <div id="qr-wrap"></div>
-      <div class="upi-id" onclick="copyUPI()">drsatishscan@upi</div>
-      <div class="copy-hint">Tap to copy UPI ID / ಒತ್ತಿ ನಕಲಿಸಿ</div>
+      <div class="copy-hint">QR has the amount filled in · from another phone, just scan / QR ನಲ್ಲಿ ಮೊತ್ತ ಸೇರಿದೆ</div>
     </div>
     <div class="pay-steps">
-      <div class="pstep"><div class="pnum">1</div><div>Open <strong>GPay / PhonePe / Paytm</strong> — scan QR or copy UPI ID above / ಮೇಲಿನ UPI ID ನಕಲಿಸಿ.</div></div>
-      <div class="pstep"><div class="pnum">2</div><div>Pay <strong>exact amount shown above</strong>. Note the <strong>Transaction ID</strong> after payment / ಟ್ರಾನ್ಸಾಕ್ಷನ್ ID ನೋಟ್ ಮಾಡಿ.</div></div>
-      <div class="pstep"><div class="pnum">3</div><div>Enter <strong>Transaction ID</strong> below and submit / ಕೆಳಗೆ ನಮೂದಿಸಿ.</div></div>
-      <div class="pstep"><div class="pnum">4</div><div><strong>PDF token sent to WhatsApp</strong> after verification (within 30 min) / PDF ಟೋಕನ್ WhatsApp ಗೆ ಬರುತ್ತದೆ.</div></div>
+      <div class="pstep"><div class="pnum">1</div><div>Pay the <strong>exact amount shown above</strong> (not ₹500) / ಮೇಲೆ ತೋರಿಸಿದ <strong>ನಿಖರ ಮೊತ್ತ</strong> ಪಾವತಿಸಿ.</div></div>
+      <div class="pstep"><div class="pnum">2</div><div>Open the payment in your UPI app and copy the <strong>12-digit UTR number</strong> / ಪಾವತಿಯಲ್ಲಿರುವ <strong>12 ಅಂಕಿಯ UTR</strong> ಸಂಖ್ಯೆ ನಕಲಿಸಿ.</div></div>
+      <div class="pstep"><div class="pnum">3</div><div>Enter UTR and payment time below, then submit / ಕೆಳಗೆ ನಮೂದಿಸಿ ಸಲ್ಲಿಸಿ.</div></div>
+      <div class="pstep"><div class="pnum">4</div><div>We check the payment. <strong>Token PDF on WhatsApp only after it is verified</strong> / ಪರಿಶೀಲನೆಯ ನಂತರವೇ PDF ಟೋಕನ್.</div></div>
     </div>
     <div class="fr">
-      <label>UPI Transaction ID <span class="req">*</span></label>
-      <input type="text" id="f-txn" placeholder="e.g. 412345678901" maxlength="30"/>
-      <div class="ferr" id="e-txn">Please enter UPI transaction ID</div>
+      <label>12-digit UTR / UPI Ref. No. <span class="req">*</span></label>
+      <input type="text" id="f-txn" inputmode="numeric" autocomplete="off" placeholder="12 digits, e.g. 412345678901" maxlength="40" oninput="onTxnInput()"/>
+      <div class="ferr" id="e-txn">Enter the 12-digit UTR / 12 ಅಂಕಿಯ UTR ನಮೂದಿಸಿ</div>
+      <div class="utr-help">
+        <b>Where to find it / ಎಲ್ಲಿ ಸಿಗುತ್ತದೆ:</b><br/>
+        GPay → open the payment → <b>UPI transaction ID</b><br/>
+        PhonePe → open the payment → <b>UTR</b> (not the "T…" Transaction ID)<br/>
+        Paytm / BHIM / bank app → <b>UPI Ref. No.</b> / <b>RRN</b><br/>
+        ❌ Do not enter our UPI ID (drsatishscan@upi) / ನಮ್ಮ UPI ID ಹಾಕಬೇಡಿ
+      </div>
     </div>
+    <div class="fr two">
+      <div>
+        <label>Date of payment / ಪಾವತಿ ದಿನಾಂಕ <span class="req">*</span></label>
+        <input type="date" id="f-paydate" onchange="payTimeTouched=true"/>
+      </div>
+      <div>
+        <label>Time of payment / ಪಾವತಿ ಸಮಯ <span class="req">*</span></label>
+        <input type="time" id="f-paytime" onchange="payTimeTouched=true"/>
+      </div>
+    </div>
+    <div class="ferr" id="e-paytime" style="margin-top:-8px;margin-bottom:10px">Enter the date and time you paid, as shown in your UPI app / UPI ಆ್ಯಪ್‌ನಲ್ಲಿರುವ ಪಾವತಿ ದಿನಾಂಕ, ಸಮಯ ನಮೂದಿಸಿ</div>
     <hr style="border:none;border-top:1px solid #d1fae5;margin:14px 0"/>
     <div class="decl-box">
       <strong>Declaration / ಘೋಷಣೆ – Please read:</strong>
       <ol style="margin-top:7px">
-        <li>₹500 advance is <strong>non-refundable</strong> under any circumstances / ₹500 ಮುಂಗಡ ಯಾವ ಕಾರಣಕ್ಕೂ ಹಿಂತಿರುಗಿಸಲಾಗದು</li>
-        <li id="decl-sameday" style="display:none">₹300 same day charge is <strong>NOT adjustable</strong> against scan fee at clinic / ₹300 ಅರ್ಜೆಂಟ್ ಶುಲ್ಕ ಸ್ಕ್ಯಾನ್ ಶುಲ್ಕದಲ್ಲಿ ಹೊಂದಾಣಿಕೆ ಆಗುವುದಿಲ್ಲ</li>
+        <li>The advance <strong class="adv-amt">₹500.xx</strong> is <strong>non-refundable</strong> under any circumstances / ಮುಂಗಡ ಯಾವ ಕಾರಣಕ್ಕೂ ಹಿಂತಿರುಗಿಸಲಾಗದು</li>
+        <li>My booking is <strong>not accepted until the clinic verifies the payment</strong> / ಪಾವತಿ ಪರಿಶೀಲನೆಯವರೆಗೆ ಬುಕಿಂಗ್ ಸ್ವೀಕೃತವಲ್ಲ</li>
         <li>To cancel: call <strong>7204764969</strong> minimum 2 hours before / ರದ್ದು ಮಾಡಲು 2 ಗಂಟೆ ಮೊದಲು ಕರೆ ಮಾಡಿ</li>
         <li>No reschedule. Cancel and rebook fresh / ಮರು-ಶೆಡ್ಯೂಲ್ ಇಲ್ಲ</li>
-        <li>Balance scan charges payable at clinic / ಉಳಿದ ಶುಲ್ಕ ಕ್ಲಿನಿಕ್‌ನಲ್ಲಿ ಪಾವತಿಸಿ</li>
+        <li>Balance scan charges at the clinic <strong>by UPI only</strong> (no change available; cash only if exact) / ಉಳಿದ ಶುಲ್ಕ <strong>UPI ಮೂಲಕ ಮಾತ್ರ</strong> (ಚಿಲ್ಲರೆ ಇಲ್ಲ)</li>
         <li>I will comply with all PCPNDT rules and regulations.</li>
       </ol>
     </div>
@@ -305,6 +337,7 @@ textarea{resize:vertical;min-height:70px}
     <button class="btn btn-o" onclick="goStep(2)">← Back / ಹಿಂದೆ</button>
     <button class="btn btn-p" id="submitBtn" onclick="doSubmit()">Submit Booking / ಬುಕಿಂಗ್ ಸಲ್ಲಿಸಿ →</button>
   </div>
+  <div class="submit-err" id="submit-err"></div>
 </div>
 
 <!-- STEP 4 -->
@@ -313,25 +346,28 @@ textarea{resize:vertical;min-height:70px}
     <div class="wait-center">
       <div class="wait-icon">📨</div>
       <div class="wait-title">Booking Submitted! / ಬುಕಿಂಗ್ ಸಲ್ಲಿಸಲಾಗಿದೆ!</div>
-      <div class="wait-sub">Payment being verified. PDF token will be sent to your WhatsApp.<br/>ಪಾವತಿ ಪರಿಶೀಲನೆ ನಡೆಯುತ್ತಿದೆ. PDF ಟೋಕನ್ WhatsApp ಗೆ ಬರುತ್ತದೆ.</div>
+      <div class="wait-sub"><b>Not confirmed yet.</b> We will check the payment in our account. The token PDF is sent on WhatsApp only after that. Please do not come without it.<br/><b>ಇನ್ನೂ ಖಚಿತವಾಗಿಲ್ಲ.</b> ಪಾವತಿ ಪರಿಶೀಲಿಸಿದ ನಂತರವೇ WhatsApp ಗೆ PDF ಟೋಕನ್ ಬರುತ್ತದೆ. ಟೋಕನ್ ಇಲ್ಲದೆ ಬರಬೇಡಿ.</div>
       <div style="font-size:12px;color:var(--gray);margin-bottom:6px">Booking Reference / ಬುಕಿಂಗ್ ಉಲ್ಲೇಖ</div>
       <div class="token-pill" id="tok-display">--</div><br/>
+      <div class="note-down">✍️ <b>Note down or save this</b> — quote the Booking Reference and UTR for any call or query.<br/>ಈ ಬುಕಿಂಗ್ ಉಲ್ಲೇಖ ಮತ್ತು UTR ಬರೆದಿಟ್ಟುಕೊಳ್ಳಿ / ಉಳಿಸಿಕೊಳ್ಳಿ.</div>
+      <div class="brow" style="margin:8px 0 12px"><button type="button" class="btn btn-o" onclick="copySlip()">📋 Copy details</button><button type="button" class="btn btn-o" onclick="downloadSlip()">⬇ Save slip</button></div>
       <div class="pending-badge">⏳ AWAITING PAYMENT VERIFICATION / ಪಾವತಿ ಪರಿಶೀಲನೆ ನಿರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ</div>
     </div>
     <div class="detail-box" id="detail-box"></div>
     <div class="txn-row" id="txn-row"></div>
     <div class="wa-box">
       <div class="wa-icon">📲</div>
-      <div>Send your <strong>UPI payment screenshot</strong> to WhatsApp <strong><a href="https://wa.me/917204764969" target="_blank" style="color:#14532d">7204764969</a></strong> with your booking reference. PDF token sent after verification.<br/>
-      <small>ಪಾವತಿ ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಮತ್ತು ಬುಕಿಂಗ್ ರೆಫರೆನ್ಸ್ WhatsApp ಗೆ ಕಳುಹಿಸಿ.</small></div>
+      <div>Optional: send your UPI payment screenshot to WhatsApp <strong><a href="https://wa.me/917204764969" target="_blank" style="color:#14532d">7204764969</a></strong>. We confirm only after we see the money in our account.<br/>
+      <small>ಬೇಕಿದ್ದರೆ ಸ್ಕ್ರೀನ್‌ಶಾಟ್ WhatsApp ಮಾಡಿ. ನಮ್ಮ ಖಾತೆಗೆ ಹಣ ಬಂದ ನಂತರವೇ ಖಚಿತಪಡಿಸುತ್ತೇವೆ.</small><br/>
+      <b>Balance at the clinic: UPI only (no change). / ಉಳಿದ ಮೊತ್ತ UPI ಮೂಲಕ ಮಾತ್ರ.</b></div>
     </div>
   </div>
   <a class="btn-wa" id="wa-btn" href="#" target="_blank" style="margin-bottom:10px">
-    📲 Send Screenshot on WhatsApp / ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಕಳುಹಿಸಿ
+    📲 Send screenshot on WhatsApp (optional) / ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಕಳುಹಿಸಿ
   </a>
   <div style="font-size:12px;color:var(--gray);text-align:center;margin-top:8px;line-height:1.7;padding:0 10px">
-    PDF token within 30 min during clinic hours · Mon–Sat 9:30 AM – 5:30 PM · 📞 7204764969<br/>
-    ಕ್ಲಿನಿಕ್ ಸಮಯದಲ್ಲಿ 30 ನಿಮಿಷದಲ್ಲಿ PDF ಟೋಕನ್ ಬರುತ್ತದೆ
+    Verification during clinic hours · Mon–Sat 9:30 AM – 5:30 PM · 📞 7204764969<br/>
+    ಕ್ಲಿನಿಕ್ ಸಮಯದಲ್ಲಿ ಪರಿಶೀಲಿಸಲಾಗುತ್ತದೆ
   </div>
 </div>
 
@@ -341,17 +377,38 @@ textarea{resize:vertical;min-height:70px}
 <script>
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyg-2EA3yOYJSNmz1wNIrbUoj3CmkYABsUx-F6zzLDT0G9Gpa_TE9XQHtgWYc23D7NK/exec';
 const CLINIC_WA='917204764969';
+const UPI_ID='drsatishscan@upi';
+const ADVANCE_BASE=500;   // advance = ₹500 + today's date in paise (paid on the 21st → ₹500.21)
 const SLOTS=['09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
-let cur=1,gender='',scan='',slot='',slotData={},bk={},isSameDay=false,hasDuplicate=false;
+let cur=1,gender='',scan='',slot='',slotData={},bk={},isSameDay=false,hasDuplicate=false,payTimeTouched=false,curToken='',qrObj=null;
 
-function todayStr(){const t=new Date(),y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');return`${y}-${m}-${d}`;}
-function maxDateStr(){const t=new Date();t.setDate(t.getDate()+30);const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');return`${y}-${m}-${d}`;}
+// All dates/times in India time, whatever the phone's setting
+function istParts(){const f=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});const o={};f.formatToParts(new Date()).forEach(p=>o[p.type]=p.value);return{y:o.year,m:o.month,d:o.day,hh:o.hour==='24'?'00':o.hour,mm:o.minute};}
+function todayStr(){const p=istParts();return`${p.y}-${p.m}-${p.d}`;}
+function nowHM(){const p=istParts();return`${p.hh}:${p.mm}`;}
+function maxDateStr(){const t=new Date(todayStr()+'T00:00:00');t.setDate(t.getDate()+30);const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');return`${y}-${m}-${d}`;}
+function advanceToday(){return (ADVANCE_BASE*100+parseInt(istParts().d,10))/100;}
+function amtStr(a){return Number(a).toFixed(2);}
+function ordinal(n){const s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+
+function upiLink(){const amt=amtStr(advanceToday());return`upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent('Dr LGK Ultrasound')}&am=${amt}&cu=INR&tn=${encodeURIComponent('Advance '+(curToken||'booking'))}`;}
+function refreshAmount(){
+  const amt=amtStr(advanceToday()), day=parseInt(istParts().d,10);
+  document.querySelectorAll('.adv-amt').forEach(el=>el.textContent='₹'+amt);
+  const pa=document.getElementById('pay-amount'); if(pa) pa.textContent='₹'+amt;
+  const ca=document.getElementById('copy-amt-btn'); if(ca) ca.textContent='📋 '+amt;
+  const why=document.getElementById('amt-why');
+  if(why) why.innerHTML=`₹500 + today's date (${ordinal(day)}) in paise = <b>₹${amt}</b>. The paise tell us the day you paid.<br/>₹500 + ಇಂದಿನ ದಿನಾಂಕ (${day}) ಪೈಸೆಯಲ್ಲಿ = <b>₹${amt}</b>`;
+  const btn=document.getElementById('upi-app-btn'); if(btn){btn.href=upiLink();btn.textContent=`📲 Pay ₹${amt} in UPI app / UPI ಆ್ಯಪ್‌ನಲ್ಲಿ ಪಾವತಿಸಿ`;}
+  const wrap=document.getElementById('qr-wrap');
+  if(wrap&&typeof QRCode!=='undefined'){wrap.innerHTML='';qrObj=new QRCode(wrap,{text:upiLink(),width:170,height:170,colorDark:'#1a5c3a',colorLight:'#ffffff'});}
+}
 
 window.addEventListener('load',()=>{
   const fd=document.getElementById('f-date');
   fd.min=todayStr();
   fd.max=maxDateStr();
-  new QRCode(document.getElementById('qr-wrap'),{text:`upi://pay?pa=drsatishscan@upi&pn=Dr%20LGK%20Ultrasound&am=500&cu=INR`,width:170,height:170,colorDark:'#1a5c3a',colorLight:'#ffffff'});
+  refreshAmount();
 });
 
 function onDateChange(){
@@ -363,10 +420,6 @@ function onDateChange(){
   }
   isSameDay=(d===todayStr());
   document.getElementById('sameday-alert').style.display=isSameDay?'block':'none';
-  document.getElementById('sameday-seal').style.display=isSameDay?'block':'none';
-  document.getElementById('pay-amount').textContent=isSameDay?'₹800':'₹500';
-  document.getElementById('pay-lbl').textContent=isSameDay?'₹500 advance + ₹300 same day charge / ₹500 ಮುಂಗಡ + ₹300 ಅರ್ಜೆಂಟ್ ಶುಲ್ಕ':'Non-refundable advance · UPI only / ಹಿಂತಿರುಗಿಸಲಾಗದ ಮುಂಗಡ';
-  document.getElementById('decl-sameday').style.display=isSameDay?'list-item':'none';
   loadSlots(d);
 }
 
@@ -381,14 +434,15 @@ function loadSlots(d){
 
 function renderSlots(){
   const sec=document.getElementById('slots-section');
+  const isToday=document.getElementById('f-date').value===todayStr(), now=nowHM();
   let h='<div class="slot-wrap"><div class="slot-lbl">Available Time Slots / ಲಭ್ಯ ಸ್ಲಾಟ್‌ಗಳು</div><div class="slot-grid">';
   SLOTS.forEach(s=>{
-    const c=slotData[s]||0,av=2-c;
+    const c=slotData[s]||0,av=2-c, gone=isToday&&s<=now;
     let cls='slot',av_t='';
-    if(av<=0){cls+=' full';av_t='<span class="slot-av">Full / ತುಂಬಿದೆ</span>';}
+    if(av<=0||gone){cls+=' full';av_t='<span class="slot-av">'+(gone?'Over / ಮುಗಿದಿದೆ':'Full / ತುಂಬಿದೆ')+'</span>';}
     else if(av===1){cls+=' one';av_t='<span class="slot-av">1 left / 1 ಉಳಿದಿದೆ</span>';}
     else{av_t='<span class="slot-av">Available / ಲಭ್ಯ</span>';}
-    const clk=av>0?`onclick="selSlot('${s}',this)"`:'';
+    const clk=(av>0&&!gone)?`onclick="selSlot('${s}',this)"`:'';
     h+=`<div class="${cls}" ${clk}>${fmtT(s)}${av_t}</div>`;
   });
   sec.innerHTML=h+'</div></div>';
@@ -430,28 +484,140 @@ function validate2(){
 
 function goStep(n){document.getElementById('step'+cur).classList.remove('active');cur=n;document.getElementById('step'+n).classList.add('active');updStepper();window.scrollTo({top:0,behavior:'smooth'});}
 function next1(){if(validate1())goStep(2);}
-function next2(){if(validate2())goStep(3);}
+function next2(){
+  if(!validate2())return;
+  if(!curToken) curToken=mkToken();
+  refreshAmount();
+  if(!payTimeTouched){ document.getElementById('f-paytime').value=nowHM(); document.getElementById('f-paydate').value=todayStr(); }
+  document.getElementById('f-paydate').max=todayStr();
+  goStep(3);
+}
 function updStepper(){for(let i=1;i<=4;i++){const el=document.getElementById('sp'+i);el.classList.remove('active','done');if(i<cur)el.classList.add('done');else if(i===cur)el.classList.add('active');if(i<4)document.getElementById('sc'+i).style.background=i<cur?'var(--g2)':'#e5e7eb';}}
 function mkToken(){return'LGK-'+document.getElementById('f-date').value.replace(/-/g,'')+'-'+String(Math.floor(Math.random()*900)+100);}
-function copyUPI(){navigator.clipboard.writeText('drsatishscan@upi').then(()=>showToast('UPI ID copied! / ನಕಲಿಸಲಾಗಿದೆ!'));}
+function copyText(t,msg){
+  const done=()=>showToast(msg);
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done).catch(()=>fallbackCopy(t,done));}
+  else fallbackCopy(t,done);
+}
+function fallbackCopy(t,done){const ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();done();}
+function copyUPI(){copyText(UPI_ID,'UPI ID copied! / UPI ID ನಕಲಿಸಲಾಗಿದೆ!');}
+function copyAmount(){copyText(amtStr(advanceToday()),'Amount copied: ₹'+amtStr(advanceToday())+' / ಮೊತ್ತ ನಕಲಿಸಲಾಗಿದೆ');}
+// Save the QR as an image (with amount + UPI ID written on it) — scan it from the UPI app's gallery.
+function downloadQR(){
+  const src=document.querySelector('#qr-wrap canvas'); if(!src){showToast('QR not ready');return;}
+  const W=520,H=700,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  g.fillStyle='#fff';g.fillRect(0,0,W,H);
+  g.fillStyle='#1a5c3a';g.fillRect(0,0,W,90);
+  g.fillStyle='#fff';g.font='bold 26px Arial';g.textAlign='center';g.fillText('Dr. L G Krishna Ultrasound Clinic',W/2,40);
+  g.font='16px Arial';g.fillText('Advance payment - scan with any UPI app',W/2,70);
+  g.imageSmoothingEnabled=false;g.drawImage(src,90,110,340,340);
+  g.fillStyle='#1a5c3a';g.font='bold 48px Arial';g.fillText('Rs. '+amtStr(advanceToday()),W/2,520);
+  g.fillStyle='#334155';g.font='bold 22px Arial';g.fillText('UPI ID: '+UPI_ID,W/2,565);
+  g.font='18px Arial';g.fillText('Pay the exact amount (with paise)',W/2,605);
+  g.fillText('Ref: '+(curToken||''),W/2,640);
+  const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='LGK_advance_QR_'+amtStr(advanceToday())+'.png';document.body.appendChild(a);a.click();a.remove();
+  showToast('QR saved / QR ಉಳಿಸಲಾಗಿದೆ');
+}
+// Reference slip after submitting — NOT a token
+function slipLines(){
+  if(!bk||!bk.token) return [];
+  const dfmt=new Date(bk.date+'T00:00:00').toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  return ['Dr. L G Krishna Ultrasound Clinic, Sirsi - 7204764969','BOOKING REQUEST - NOT YET CONFIRMED',
+    'Booking Reference: '+bk.token,'Patient: '+bk.name+' ('+bk.phone+')','Scan: '+bk.scan,'Appointment: '+dfmt+', '+bk.slotDisplay,
+    'Advance paid: Rs. '+amtStr(bk.advance)+' on '+bk.paidTimeStated,'UTR: '+bk.upiTxn,
+    'Token PDF comes on WhatsApp after payment is verified.','Balance at clinic: UPI only (no change given).'];
+}
+function copySlip(){ copyText(slipLines().join('\n'),'Details copied / ವಿವರ ನಕಲಿಸಲಾಗಿದೆ'); }
+function downloadSlip(){
+  const L=slipLines(); if(!L.length) return;
+  const W=720,H=90+L.length*44,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  g.fillStyle='#fff';g.fillRect(0,0,W,H);g.fillStyle='#1a5c3a';g.fillRect(0,0,W,70);
+  g.fillStyle='#fff';g.font='bold 24px Arial';g.fillText(L[0],24,44);
+  L.slice(1).forEach((t,i)=>{g.fillStyle=i===0?'#b45309':(i===1?'#1a5c3a':'#1e293b');g.font=(i<2?'bold 24px':'21px')+' Arial';g.fillText(t,24,110+i*44);});
+  const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='LGK_booking_'+bk.token+'.png';document.body.appendChild(a);a.click();a.remove();
+  showToast('Slip saved / ಉಳಿಸಲಾಗಿದೆ');
+}
 
-function doSubmit(){
-  const txn=document.getElementById('f-txn').value.trim();
-  if(!txn){document.getElementById('e-txn').style.display='block';return;}
-  document.getElementById('e-txn').style.display='none';
+// UTR check: 12 digits only. Catches the usual mistakes before they reach the clinic.
+function utrProblem(raw){
+  const v=String(raw||'').trim();
+  if(!v) return 'Enter the 12-digit UTR / 12 ಅಂಕಿಯ UTR ನಮೂದಿಸಿ';
+  if(/@/.test(v)) return '❌ That is a UPI ID, not the payment number. Open the payment in your app and copy the 12-digit UTR. / ಇದು UPI ID. ಪಾವತಿಯ 12 ಅಂಕಿಯ UTR ನಕಲಿಸಿ.';
+  if(/^T\d/i.test(v)) return '❌ That is the PhonePe Transaction ID (starts with T). Copy the 12-digit UTR shown below it. / "T" ಇಂದ ಆರಂಭವಾಗುವುದು UTR ಅಲ್ಲ.';
+  const d=v.replace(/[\s-]/g,'');
+  if(!/^\d+$/.test(d)) return '❌ UTR has numbers only (12 digits). / UTR ನಲ್ಲಿ ಅಂಕಿಗಳು ಮಾತ್ರ.';
+  if(d.length!==12) return `❌ UTR must be 12 digits — you entered ${d.length}. / 12 ಅಂಕಿ ಇರಬೇಕು (ನೀವು ${d.length} ಹಾಕಿದ್ದೀರಿ).`;
+  if(/^(\d)\1{11}$/.test(d)||d==='123456789012') return '❌ This is not a real UTR. / ಇದು ಸರಿಯಾದ UTR ಅಲ್ಲ.';
+  return '';
+}
+function onTxnInput(){
+  // the moment they come back from the UPI app is the moment they paid
+  if(!payTimeTouched){ document.getElementById('f-paytime').value=nowHM(); document.getElementById('f-paydate').value=todayStr(); }
+  const e=document.getElementById('e-txn'); e.style.display='none';
+  document.getElementById('f-txn').classList.remove('err');
+}
+function showSubmitErr(html){const el=document.getElementById('submit-err');el.innerHTML=html;el.style.display=html?'block':'none';if(html)el.scrollIntoView({behavior:'smooth',block:'center'});}
+
+async function doSubmit(){
+  showSubmitErr('');
+  const raw=document.getElementById('f-txn').value;
+  const prob=utrProblem(raw);
+  const eTxn=document.getElementById('e-txn');
+  if(prob){eTxn.textContent=prob;eTxn.style.display='block';document.getElementById('f-txn').classList.add('err');document.getElementById('f-txn').focus();return;}
+  eTxn.style.display='none';
+  const txn=raw.replace(/[\s-]/g,'');
+  const payTime=document.getElementById('f-paytime').value, payDate=document.getElementById('f-paydate').value;
+  const ep=document.getElementById('e-paytime');
+  if(!payTime||!payDate){ep.style.display='block';return;}
+  if(payDate+'T'+payTime>todayStr()+'T'+nowHM()){ep.textContent='Payment date/time cannot be later than now / ಈಗಿನ ಸಮಯಕ್ಕಿಂತ ನಂತರ ಆಗಬಾರದು';ep.style.display='block';return;}
+  document.getElementById('e-paytime').style.display='none';
   const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Submitting… / ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ…';
-  const token=mkToken(),dateStr=document.getElementById('f-date').value;
-  const advance=isSameDay?800:500;
-  bk={token,name:document.getElementById('f-name').value.trim(),age:document.getElementById('f-age').value,gender,phone:document.getElementById('f-phone').value.trim(),email:document.getElementById('f-email').value.trim(),address:document.getElementById('f-addr').value.trim(),scan,date:dateStr,slot,slotDisplay:fmtT(slot),upiTxn:txn,advance,sameDaySurcharge:isSameDay,status:'PENDING',submittedAt:new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})};
-  fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(bk)}).catch(()=>{});
+  const token=curToken||mkToken(),dateStr=document.getElementById('f-date').value;
+  const advance=advanceToday();
+  const paidStated=payDate.split('-').reverse().join('/')+' '+payTime;
+  bk={action:'book',token,name:document.getElementById('f-name').value.trim(),age:document.getElementById('f-age').value,gender,phone:document.getElementById('f-phone').value.trim(),email:document.getElementById('f-email').value.trim(),address:document.getElementById('f-addr').value.trim(),scan,date:dateStr,slot,slotDisplay:fmtT(slot),upiTxn:txn,advance,paidTimeStated:paidStated,sameDay:isSameDay,status:'PENDING',submittedAt:new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})};
+
+  // Readable POST (text/plain = no CORS pre-flight). If the reply cannot be read
+  // (old deployment / network quirk) the booking is still sent, exactly as before.
+  let res=null;
+  try{
+    const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(bk)});
+    res=await r.json();
+  }catch(e){
+    try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(bk)});}catch(_){}
+  }
+  if(res&&res.success===false){
+    btn.disabled=false;btn.textContent='Submit Booking / ಬುಕಿಂಗ್ ಸಲ್ಲಿಸಿ →';
+    const msgs={
+      DUP_UTR:'❌ This UTR is already used for another booking. Each booking needs its own payment. If you think this is a mistake, call 7204764969.<br/>ಈ UTR ಈಗಾಗಲೇ ಬೇರೆ ಬುಕಿಂಗ್‌ಗೆ ಬಳಸಲಾಗಿದೆ.',
+      BAD_UTR:'❌ The UTR must be exactly 12 digits. / UTR 12 ಅಂಕಿ ಇರಬೇಕು.',
+      BAD_UTR_UPIID:'❌ That is a UPI ID, not the payment number. / ಇದು UPI ID, UTR ಅಲ್ಲ.'
+    };
+    showSubmitErr(msgs[res.error]||('❌ Could not submit: '+(res.error||'please try again')+'. Call 7204764969.'));
+    return;
+  }
   const dfmt=new Date(dateStr+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   document.getElementById('tok-display').textContent=token;
-  document.getElementById('detail-box').innerHTML=`<div><strong>Patient / ರೋಗಿ:</strong> ${bk.name}</div><div><strong>Age / Gender:</strong> ${bk.age} yrs · ${bk.gender}</div><div><strong>Phone / ಫೋನ್:</strong> ${bk.phone}</div><div><strong>Scan / ಸ್ಕ್ಯಾನ್:</strong> ${bk.scan}</div><div><strong>Date / ದಿನಾಂಕ:</strong> ${dfmt}</div><div><strong>Time / ಸಮಯ:</strong> ${bk.slotDisplay}</div><div><strong>Advance paid / ಪಾವತಿ:</strong> ₹${advance}${isSameDay?' (₹500 advance + ₹300 same day charge)':''}</div>`;
-  document.getElementById('txn-row').textContent='UPI Txn ID: '+txn;
-  const msg=encodeURIComponent(`Hi Dr. Satish,\n\nAppointment booking at Dr. LGK Ultrasound Clinic.\n\nToken: ${token}\nName: ${bk.name}\nScan: ${bk.scan}\nDate: ${dfmt}\nTime: ${bk.slotDisplay}\nUPI Txn ID: ${txn}\nAmount paid: ₹${advance}${isSameDay?'\n⚡ SAME DAY BOOKING — ₹300 convenience charge included (NOT part of scan fee)':''}\n\nAttaching payment screenshot. Please confirm and send PDF token. 🙏`);
+  document.getElementById('detail-box').innerHTML=`<div><strong>Patient / ರೋಗಿ:</strong> ${esc(bk.name)}</div><div><strong>Age / Gender:</strong> ${esc(bk.age)} yrs · ${esc(bk.gender)}</div><div><strong>Phone / ಫೋನ್:</strong> ${esc(bk.phone)}</div><div><strong>Scan / ಸ್ಕ್ಯಾನ್:</strong> ${esc(bk.scan)}</div><div><strong>Date / ದಿನಾಂಕ:</strong> ${dfmt}</div><div><strong>Time / ಸಮಯ:</strong> ${bk.slotDisplay}</div><div><strong>Advance sent / ಮುಂಗಡ:</strong> ₹${amtStr(advance)} on ${paidStated} (to be verified)</div><div><strong>Balance at clinic / ಉಳಿದ ಮೊತ್ತ:</strong> UPI only / UPI ಮಾತ್ರ</div>`;
+  document.getElementById('txn-row').textContent='UTR: '+txn;
+  const msg=encodeURIComponent(`Hi Dr. Satish,\n\nAppointment booking at Dr. LGK Ultrasound Clinic.\n\nRef: ${token}\nName: ${bk.name}\nScan: ${bk.scan}\nDate: ${dfmt}\nTime: ${bk.slotDisplay}\nAdvance paid: ₹${amtStr(advance)} on ${paidStated}\nUTR: ${txn}\n\nAttaching payment screenshot. 🙏`);
   document.getElementById('wa-btn').href=`https://wa.me/${CLINIC_WA}?text=${msg}`;
   goStep(4);
 }
+async function checkStatus(){
+  const ph=document.getElementById('st-phone').value.replace(/\D/g,''), ref=document.getElementById('st-ref').value.trim().toUpperCase();
+  const out=document.getElementById('st-out');
+  if(ph.length!==10||!ref){out.innerHTML='<span style="color:var(--red)">Enter phone and booking reference / ಫೋನ್ ಮತ್ತು ಉಲ್ಲೇಖ ನಮೂದಿಸಿ</span>';return;}
+  out.textContent='…';
+  try{
+    const j=await (await fetch(SCRIPT_URL+'?action=status&phone='+ph+'&ref='+encodeURIComponent(ref))).json();
+    if(!j.found){out.innerHTML='<span style="color:var(--red)">No booking found with this phone and reference. / ಬುಕಿಂಗ್ ಕಂಡುಬಂದಿಲ್ಲ.</span>';return;}
+    const m={PENDING:['#92400e','⏳ Waiting for payment verification / ಪಾವತಿ ಪರಿಶೀಲನೆ ಬಾಕಿ'],CONFIRMED:['#166534','✅ Confirmed — token PDF sent on WhatsApp / ಖಚಿತವಾಗಿದೆ'],
+             UNPAID:['#991b1b','✖ Not accepted — advance not received / ಮುಂಗಡ ಬಂದಿಲ್ಲ'],CANCELLED:['#991b1b','✖ Cancelled / ರದ್ದಾಗಿದೆ']}[j.status]||['#334155',j.status];
+    out.innerHTML=`<b style="color:${m[0]}">${m[1]}</b><br/>${esc(j.scan)} · ${esc(j.date)} ${esc(j.slot)}`;
+  }catch(e){out.textContent='Could not check now. Call 7204764969.';}
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 </script>
 </body>
