@@ -61,6 +61,13 @@ textarea{resize:vertical;min-height:70px}
 /* SAME DAY ALERT */
 .sameday-alert{display:none;background:#fff8e1;border:2px solid #f59e0b;border-radius:12px;padding:14px;margin-top:12px;font-size:13px;color:#78350f;line-height:1.7}
 .sameday-alert .sd-title{font-size:15px;font-weight:700;color:#b45309;margin-bottom:6px}
+.line-card{background:#f0fdf4;border:2px solid #16a34a;border-radius:14px;padding:14px;margin-top:12px;text-align:center;color:#14532d;line-height:1.6}
+.line-card.closed{background:#fef2f2;border-color:#dc2626;color:#7f1d1d}
+.line-now{font-size:13px}
+.line-tok{font-family:'Playfair Display',serif;font-size:44px;font-weight:800;line-height:1.1;margin:4px 0}
+.line-eta{font-size:17px;font-weight:700;margin:4px 0}
+.line-note{font-size:12px;color:#334155;text-align:left;margin-top:8px}
+.preg-note{display:none;background:#fdf2f8;border:2px solid #db2777;border-radius:12px;padding:10px 12px;margin-top:12px;font-size:13px;color:#831843;line-height:1.6}
 /* SAME DAY SEAL */
 .sameday-seal{display:none;background:linear-gradient(135deg,#b45309,#d97706);color:#fff;border-radius:12px;padding:16px 18px;margin-bottom:16px;position:relative;overflow:hidden}
 .sameday-seal::before{content:'⚡';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:48px;opacity:0.15}
@@ -231,7 +238,7 @@ textarea{resize:vertical;min-height:70px}
     <ul>
       <li>Advance today: <strong class="adv-amt">₹500.xx</strong> (₹500 + today's date in paise) — <strong>non-refundable</strong>, adjusted in your scan fee / ಮುಂಗಡ <strong class="adv-amt">₹500.xx</strong> ಹಿಂತಿರುಗಿಸಲಾಗದು, ಸ್ಕ್ಯಾನ್ ಶುಲ್ಕದಲ್ಲಿ ಹೊಂದಿಸಲಾಗುವುದು</li>
       <li>Note down your <strong>Booking Reference</strong> and <strong>UTR</strong> — quote them for any query / ಬುಕಿಂಗ್ ಉಲ್ಲೇಖ ಸಂಖ್ಯೆ ಮತ್ತು UTR ಬರೆದಿಟ್ಟುಕೊಳ್ಳಿ</li>
-      <li><strong>Booking is NOT confirmed until we verify your payment.</strong> Token PDF comes only after that / ಪಾವತಿ ಪರಿಶೀಲನೆಯ ನಂತರವೇ ಬುಕಿಂಗ್ ಖಚಿತ</li>
+      <li><strong>Booking is NOT confirmed until we verify your payment.</strong> Then you get a <strong>key</strong> (on WhatsApp and under "Check status") — show it at the reception / ಪಾವತಿ ಪರಿಶೀಲನೆಯ ನಂತರವೇ ಖಚಿತ; ನಂತರ <strong>ಕೀ</strong> ಸಿಗುತ್ತದೆ</li>
       <li><strong>Balance at the clinic: UPI only</strong> — we cannot give change / ಉಳಿದ ಮೊತ್ತ ಕ್ಲಿನಿಕ್‌ನಲ್ಲಿ <strong>UPI ಮೂಲಕ ಮಾತ್ರ</strong> — ಚಿಲ್ಲರೆ ಕೊಡಲಾಗುವುದಿಲ್ಲ</li>
       <li>Booking available <strong>today to next 30 days only</strong> / ಇಂದಿನಿಂದ 30 ದಿನಗಳ ವರೆಗೆ ಮಾತ್ರ</li>
       <li>To cancel: call <strong>7204764969</strong> minimum 2 hours before / ರದ್ದು ಮಾಡಲು 2 ಗಂಟೆ ಮೊದಲು ಕರೆ ಮಾಡಿ</li>
@@ -258,6 +265,7 @@ textarea{resize:vertical;min-height:70px}
       </div>
     </div>
     <div id="slots-section"></div>
+    <div class="preg-note" id="preg-note2">🤰 <b>Pregnancy scan: no need for a full bladder, and no need to come on an empty stomach.</b> Eat and drink as usual.<br/>ಗರ್ಭಿಣಿಯರ ಸ್ಕ್ಯಾನ್: ಮೂತ್ರಕೋಶ ತುಂಬಿಸುವ ಅಗತ್ಯವಿಲ್ಲ, ಖಾಲಿ ಹೊಟ್ಟೆಯಲ್ಲಿ ಬರುವ ಅಗತ್ಯವಿಲ್ಲ. ಎಂದಿನಂತೆ ತಿಂದು ಕುಡಿದು ಬನ್ನಿ.</div>
     <input type="hidden" id="f-slot"/>
     <div class="ferr" id="e-slot">Please select a time slot / ಸ್ಲಾಟ್ ಆಯ್ಕೆ ಮಾಡಿ</div>
   </div>
@@ -349,11 +357,13 @@ textarea{resize:vertical;min-height:70px}
       <div class="wait-sub"><b>Not confirmed yet.</b> We will check the payment in our account. The token PDF is sent on WhatsApp only after that. Please do not come without it.<br/><b>ಇನ್ನೂ ಖಚಿತವಾಗಿಲ್ಲ.</b> ಪಾವತಿ ಪರಿಶೀಲಿಸಿದ ನಂತರವೇ WhatsApp ಗೆ PDF ಟೋಕನ್ ಬರುತ್ತದೆ. ಟೋಕನ್ ಇಲ್ಲದೆ ಬರಬೇಡಿ.</div>
       <div style="font-size:12px;color:var(--gray);margin-bottom:6px">Booking Reference / ಬುಕಿಂಗ್ ಉಲ್ಲೇಖ</div>
       <div class="token-pill" id="tok-display">--</div><br/>
+      <div class="line-card" id="day-tok-box" style="display:none"></div>
       <div class="note-down">✍️ <b>Note down or save this</b> — quote the Booking Reference and UTR for any call or query.<br/>ಈ ಬುಕಿಂಗ್ ಉಲ್ಲೇಖ ಮತ್ತು UTR ಬರೆದಿಟ್ಟುಕೊಳ್ಳಿ / ಉಳಿಸಿಕೊಳ್ಳಿ.</div>
       <div class="brow" style="margin:8px 0 12px"><button type="button" class="btn btn-o" onclick="copySlip()">📋 Copy details</button><button type="button" class="btn btn-o" onclick="downloadSlip()">⬇ Save slip</button></div>
       <div class="pending-badge">⏳ AWAITING PAYMENT VERIFICATION / ಪಾವತಿ ಪರಿಶೀಲನೆ ನಿರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ</div>
     </div>
     <div class="detail-box" id="detail-box"></div>
+    <div class="preg-note" id="preg-note4">🤰 <b>Pregnancy scan: no need for a full bladder, and no need to come on an empty stomach.</b><br/>ಗರ್ಭಿಣಿಯರ ಸ್ಕ್ಯಾನ್: ಮೂತ್ರಕೋಶ ತುಂಬಿಸುವ ಅಗತ್ಯವಿಲ್ಲ, ಖಾಲಿ ಹೊಟ್ಟೆಯಲ್ಲಿ ಬರುವ ಅಗತ್ಯವಿಲ್ಲ.</div>
     <div class="txn-row" id="txn-row"></div>
     <div class="wa-box">
       <div class="wa-icon">📲</div>
@@ -380,7 +390,10 @@ const CLINIC_WA='917204764969';
 const UPI_ID='drsatishscan@upi';
 const ADVANCE_BASE=500;   // advance = ₹500 + today's date in paise (paid on the 21st → ₹500.21)
 const SLOTS=['09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
-let cur=1,gender='',scan='',slot='',slotData={},bk={},isSameDay=false,hasDuplicate=false,payTimeTouched=false,curToken='',qrObj=null;
+let cur=1,gender='',scan='',slot='',slotData={},bk={},isSameDay=false,hasDuplicate=false,payTimeTouched=false,curToken='',qrObj=null,lineInfo=null,statusTimer=null;
+const PREG_SCANS=['Early Pregnancy (EP)','NT Scan','Anomaly Scan','Growth Scan','Fetal Echo','Anomaly + Echo'];
+function isPreg(){return PREG_SCANS.indexOf(scan)>=0||/pregnan|obstet|\bob\b|foetal|fetal|nt scan|anomaly|growth/i.test(scan||'');}
+function showPreg(){['preg-note2','preg-note4'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display=isPreg()?'block':'none';});}
 
 // All dates/times in India time, whatever the phone's setting
 function istParts(){const f=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});const o={};f.formatToParts(new Date()).forEach(p=>o[p.type]=p.value);return{y:o.year,m:o.month,d:o.day,hh:o.hour==='24'?'00':o.hour,mm:o.minute};}
@@ -420,7 +433,44 @@ function onDateChange(){
   }
   isSameDay=(d===todayStr());
   document.getElementById('sameday-alert').style.display=isSameDay?'block':'none';
-  loadSlots(d);
+  slot='';document.getElementById('f-slot').value='';
+  showPreg();
+  if(isSameDay) loadLine(); else loadSlots(d);
+}
+
+// ── Today: join today's line (one token sequence with reception) ──
+function lineClosedMsg(li){
+  const tm=li&&li.tomorrow?new Date(li.tomorrow+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'}):'';
+  const why={DAY_FULL:`Today's line is full — the next patient would be seen after ${esc(li.cutoffTxt||'7:30 PM')}.<br/>ಇಂದಿನ ಸಾಲು ತುಂಬಿದೆ.`,
+             NOT_YET:`Same-day tokens open at ${esc(li.openFromTxt||'6:00 AM')}.<br/>ಅದೇ ದಿನದ ಟೋಕನ್ ${esc(li.openFromTxt||'6:00 AM')} ರಿಂದ.`,
+             OFF_TODAY:'No same-day online tokens today.<br/>ಇಂದು ಆನ್‌ಲೈನ್ ಟೋಕನ್ ಇಲ್ಲ.',
+             CLOSED_TODAY:'The clinic is closed today.<br/>ಇಂದು ಕ್ಲಿನಿಕ್ ರಜೆ.',
+             CLOSED:'No same-day tokens right now.<br/>ಈಗ ಟೋಕನ್ ಇಲ್ಲ.'}[li&&li.reason]||'No same-day tokens right now.';
+  return `<div class="line-card closed"><div style="font-size:15px;font-weight:700">${why}</div>`+
+    (tm?`<button type="button" class="btn btn-p" style="margin-top:10px" onclick="pickDay('${li.tomorrow}')">Book for ${esc(tm)} → / ನಾಳೆಗೆ ಬುಕ್ ಮಾಡಿ</button>`:'')+`</div>`;
+}
+function pickDay(d){const fd=document.getElementById('f-date');fd.value=d;onDateChange();}
+function loadLine(){
+  const sec=document.getElementById('slots-section');
+  sec.innerHTML='<div class="slot-loading"><div class="spin"></div>Checking today\'s line… / ಇಂದಿನ ಸಾಲು ನೋಡಲಾಗುತ್ತಿದೆ…</div>';
+  fetch(SCRIPT_URL+'?action=lineInfo&t='+Date.now()).then(r=>r.json()).then(li=>{
+    lineInfo=li;
+    if(!li||li.open===undefined){sec.innerHTML='<div class="blocked-msg">Could not check today\'s line. Please call 7204764969.</div>';return;}
+    if(!li.open){slot='';sec.innerHTML=lineClosedMsg(li);return;}
+    slot='TOKEN';document.getElementById('f-slot').value='TOKEN';
+    sec.innerHTML=`<div class="line-card">
+      <div class="line-now">${li.nowToken&&li.nowToken!=='-'?`Being seen now: token <b>${esc(li.nowToken)}</b> / ಈಗ ಟೋಕನ್ <b>${esc(li.nowToken)}</b>`:'The doctor has not started yet / ಇನ್ನೂ ಆರಂಭವಾಗಿಲ್ಲ'}</div>
+      <div style="font-size:13px;margin-top:6px">Your token would be / ನಿಮ್ಮ ಟೋಕನ್</div>
+      <div class="line-tok">${esc(li.nextToken)}</div>
+      <div class="line-eta">Expected: about ${esc(li.eta.fromTxt)} – ${esc(li.eta.toTxt)}</div>
+      <div style="font-size:12px">ಅಂದಾಜು ಸಮಯ: ${esc(li.eta.fromTxt)} – ${esc(li.eta.toTxt)}</div>
+      <div class="line-note">• You join <b>at the end of today's line</b> — never in between. Patients at the counter before you go first.<br/>
+        • The number is given when you submit the payment. If someone takes one just before you, yours may be one higher.<br/>
+        • The time is an estimate from our own daily scan times. Please be at the clinic 20 minutes before.<br/>
+        • If you are not there when your number is called, you go in after the patient being seen.<br/>
+        • ನೀವು ಇಂದಿನ ಸಾಲಿನ ಕೊನೆಗೆ ಸೇರುತ್ತೀರಿ. 20 ನಿಮಿಷ ಮೊದಲು ಕ್ಲಿನಿಕ್‌ನಲ್ಲಿರಿ. ಕರೆದಾಗ ಇಲ್ಲದಿದ್ದರೆ, ಆಗ ಸ್ಕ್ಯಾನ್ ಆಗುತ್ತಿರುವವರ ನಂತರ ಹೋಗುತ್ತೀರಿ.</div>
+    </div>`;
+  }).catch(()=>{sec.innerHTML='<div class="blocked-msg">Could not check today\'s line. Please try again or call 7204764969.</div>';});
 }
 
 function loadSlots(d){
@@ -451,7 +501,7 @@ function renderSlots(){
 function fmtT(t){const[h,m]=t.split(':').map(Number),ap=h<12?'AM':'PM',hh=h>12?h-12:h===0?12:h;return`${hh}:${m.toString().padStart(2,'0')} ${ap}`;}
 function selSlot(s,el){if(el.classList.contains('full'))return;slot=s;document.getElementById('f-slot').value=s;document.querySelectorAll('.slot').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
 function selGender(g,el){gender=g;document.getElementById('f-gender').value=g;document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
-function selScan(el,v){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');if(v==='__other__'){document.getElementById('other-wrap').style.display='block';scan='';document.getElementById('f-scan').value='';}else{document.getElementById('other-wrap').style.display='none';scan=v;document.getElementById('f-scan').value=v;}}
+function selScan(el,v){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');if(v==='__other__'){document.getElementById('other-wrap').style.display='block';scan='';document.getElementById('f-scan').value='';}else{document.getElementById('other-wrap').style.display='none';scan=v;document.getElementById('f-scan').value=v;}showPreg();}
 document.getElementById('f-other').addEventListener('input',function(){scan=this.value.trim();document.getElementById('f-scan').value=scan;});
 
 function checkDuplicate(){
@@ -472,7 +522,6 @@ function validate1(){
   });
   if(!gender){document.getElementById('e-gender').style.display='block';ok=false;}else document.getElementById('e-gender').style.display='none';
   if(!scan.trim()){document.getElementById('e-scan').style.display='block';ok=false;}else document.getElementById('e-scan').style.display='none';
-  if(hasDuplicate){showToast('Existing booking found. Call 7204764969. / ಬುಕಿಂಗ್ ಇದೆ, ಕರೆ ಮಾಡಿ.');ok=false;}
   return ok;
 }
 function validate2(){
@@ -486,6 +535,8 @@ function goStep(n){document.getElementById('step'+cur).classList.remove('active'
 function next1(){if(validate1())goStep(2);}
 function next2(){
   if(!validate2())return;
+  if(hasDuplicate&&!isSameDay){showToast('Existing booking found. Call 7204764969. / ಬುಕಿಂಗ್ ಇದೆ, ಕರೆ ಮಾಡಿ.');return;}
+  if(isSameDay&&(!lineInfo||!lineInfo.open)){showToast('No same-day token right now / ಈಗ ಟೋಕನ್ ಇಲ್ಲ');return;}
   if(!curToken) curToken=mkToken();
   refreshAmount();
   if(!payTimeTouched){ document.getElementById('f-paytime').value=nowHM(); document.getElementById('f-paydate').value=todayStr(); }
@@ -575,7 +626,7 @@ async function doSubmit(){
   const token=curToken||mkToken(),dateStr=document.getElementById('f-date').value;
   const advance=advanceToday();
   const paidStated=payDate.split('-').reverse().join('/')+' '+payTime;
-  bk={action:'book',token,name:document.getElementById('f-name').value.trim(),age:document.getElementById('f-age').value,gender,phone:document.getElementById('f-phone').value.trim(),email:document.getElementById('f-email').value.trim(),address:document.getElementById('f-addr').value.trim(),scan,date:dateStr,slot,slotDisplay:fmtT(slot),upiTxn:txn,advance,paidTimeStated:paidStated,sameDay:isSameDay,status:'PENDING',submittedAt:new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})};
+  bk={action:'book',token,name:document.getElementById('f-name').value.trim(),age:document.getElementById('f-age').value,gender,phone:document.getElementById('f-phone').value.trim(),email:document.getElementById('f-email').value.trim(),address:document.getElementById('f-addr').value.trim(),scan,date:dateStr,slot:isSameDay?'':slot,slotDisplay:isSameDay?'':fmtT(slot),upiTxn:txn,advance,paidTimeStated:paidStated,sameDay:isSameDay,status:'PENDING',submittedAt:new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})};
 
   // Readable POST (text/plain = no CORS pre-flight). If the reply cannot be read
   // (old deployment / network quirk) the booking is still sent, exactly as before.
@@ -591,18 +642,51 @@ async function doSubmit(){
     const msgs={
       DUP_UTR:'❌ This UTR is already used for another booking. Each booking needs its own payment. If you think this is a mistake, call 7204764969.<br/>ಈ UTR ಈಗಾಗಲೇ ಬೇರೆ ಬುಕಿಂಗ್‌ಗೆ ಬಳಸಲಾಗಿದೆ.',
       BAD_UTR:'❌ The UTR must be exactly 12 digits. / UTR 12 ಅಂಕಿ ಇರಬೇಕು.',
-      BAD_UTR_UPIID:'❌ That is a UPI ID, not the payment number. / ಇದು UPI ID, UTR ಅಲ್ಲ.'
+      BAD_UTR_UPIID:'❌ That is a UPI ID, not the payment number. / ಇದು UPI ID, UTR ಅಲ್ಲ.',
+      PHONE_LIMIT:'❌ This phone number already has '+(res.limit||2)+' same-day tokens today. Call 7204764969. / ಈ ಫೋನ್‌ಗೆ ಇಂದು ಈಗಾಗಲೇ ಟೋಕನ್ ಇದೆ.',
+      DAY_FULL:'❌ Today\'s line became full just now. Your payment is safe — please call 7204764969 and we will book you for the next day. / ಇಂದಿನ ಸಾಲು ತುಂಬಿದೆ. ಕರೆ ಮಾಡಿ.',
+      NOT_YET:'❌ Same-day tokens are not open yet. Call 7204764969.',
+      OFF_TODAY:'❌ No same-day online tokens today. Call 7204764969.',
+      CLOSED_TODAY:'❌ The clinic is closed today. Call 7204764969.'
     };
     showSubmitErr(msgs[res.error]||('❌ Could not submit: '+(res.error||'please try again')+'. Call 7204764969.'));
     return;
   }
   const dfmt=new Date(dateStr+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   document.getElementById('tok-display').textContent=token;
+  showPreg();
+  const dtb=document.getElementById('day-tok-box');
+  if(res&&res.dayToken){
+    bk.slotDisplay='Token '+res.dayToken+' · about '+res.eta.fromTxt;
+    dtb.innerHTML=dayTokHtml(res.dayToken,res.eta,res.nowToken,'PENDING');
+    dtb.style.display='block';
+    startStatusWatch(ph10(bk.phone),token);
+  }else if(isSameDay){
+    dtb.innerHTML='Your token number for today is shown under <b>Check status</b> below (phone + booking reference).';
+    dtb.style.display='block';
+  }else dtb.style.display='none';
   document.getElementById('detail-box').innerHTML=`<div><strong>Patient / ರೋಗಿ:</strong> ${esc(bk.name)}</div><div><strong>Age / Gender:</strong> ${esc(bk.age)} yrs · ${esc(bk.gender)}</div><div><strong>Phone / ಫೋನ್:</strong> ${esc(bk.phone)}</div><div><strong>Scan / ಸ್ಕ್ಯಾನ್:</strong> ${esc(bk.scan)}</div><div><strong>Date / ದಿನಾಂಕ:</strong> ${dfmt}</div><div><strong>Time / ಸಮಯ:</strong> ${bk.slotDisplay}</div><div><strong>Advance sent / ಮುಂಗಡ:</strong> ₹${amtStr(advance)} on ${paidStated} (to be verified)</div><div><strong>Balance at clinic / ಉಳಿದ ಮೊತ್ತ:</strong> UPI only / UPI ಮಾತ್ರ</div>`;
   document.getElementById('txn-row').textContent='UTR: '+txn;
   const msg=encodeURIComponent(`Hi Dr. Satish,\n\nAppointment booking at Dr. LGK Ultrasound Clinic.\n\nRef: ${token}\nName: ${bk.name}\nScan: ${bk.scan}\nDate: ${dfmt}\nTime: ${bk.slotDisplay}\nAdvance paid: ₹${amtStr(advance)} on ${paidStated}\nUTR: ${txn}\n\nAttaching payment screenshot. 🙏`);
   document.getElementById('wa-btn').href=`https://wa.me/${CLINIC_WA}?text=${msg}`;
   goStep(4);
+}
+function ph10(p){return String(p||'').replace(/\D/g,'').slice(-10);}
+function dayTokHtml(n,eta,nowTok,st){
+  return `<div style="font-size:13px">Your token in today's line / ನಿಮ್ಮ ಟೋಕನ್</div><div class="line-tok">${esc(n)}</div>`+
+    (eta?`<div class="line-eta">Expected: about ${esc(eta.fromTxt)} – ${esc(eta.toTxt)}</div>`:'')+
+    `<div class="line-now">${nowTok&&nowTok!=='-'?'Being seen now: token <b>'+esc(nowTok)+'</b>':'The doctor has not started yet'}</div>`+
+    (st==='PENDING'?'<div style="font-size:12px;margin-top:6px">⏳ Not confirmed until we see your payment. / ಪಾವತಿ ಪರಿಶೀಲನೆ ಬಾಕಿ.</div>':'')+
+    '<div style="font-size:11px;margin-top:6px;color:#475569">This page updates itself every minute while it is open.</div>';
+}
+function startStatusWatch(ph,ref){
+  clearInterval(statusTimer);
+  statusTimer=setInterval(async()=>{
+    if(document.hidden)return;
+    try{const j=await (await fetch(SCRIPT_URL+'?action=status&phone='+ph+'&ref='+encodeURIComponent(ref)+'&t='+Date.now())).json();
+      if(j&&j.found&&j.dayToken){document.getElementById('day-tok-box').innerHTML=dayTokHtml(j.dayToken,j.eta,j.nowToken,j.status)+(j.key?'<div style="margin-top:6px">✅ Confirmed. Your key: <b style="font-size:20px;letter-spacing:4px">'+esc(j.key)+'</b></div>':'');}
+    }catch(e){}
+  },60000);
 }
 async function checkStatus(){
   const ph=document.getElementById('st-phone').value.replace(/\D/g,''), ref=document.getElementById('st-ref').value.trim().toUpperCase();
@@ -612,9 +696,11 @@ async function checkStatus(){
   try{
     const j=await (await fetch(SCRIPT_URL+'?action=status&phone='+ph+'&ref='+encodeURIComponent(ref))).json();
     if(!j.found){out.innerHTML='<span style="color:var(--red)">No booking found with this phone and reference. / ಬುಕಿಂಗ್ ಕಂಡುಬಂದಿಲ್ಲ.</span>';return;}
-    const m={PENDING:['#92400e','⏳ Waiting for payment verification / ಪಾವತಿ ಪರಿಶೀಲನೆ ಬಾಕಿ'],CONFIRMED:['#166534','✅ Confirmed — token PDF sent on WhatsApp / ಖಚಿತವಾಗಿದೆ'],
+    const keyHtml=j.key?'<br/>Show this key at the reception / ರಿಸೆಪ್ಷನ್‌ನಲ್ಲಿ ಈ ಕೀ ತೋರಿಸಿ:<br/><span style="display:inline-block;background:#fff;border:3px dashed #1a5c3a;color:#1a5c3a;font-size:28px;font-weight:800;letter-spacing:8px;padding:6px 18px;border-radius:12px;margin:6px 0;font-family:monospace">'+esc(j.key)+'</span>':'';
+    const m={PENDING:['#92400e','⏳ Waiting for payment verification / ಪಾವತಿ ಪರಿಶೀಲನೆ ಬಾಕಿ'],CONFIRMED:['#166534','✅ Confirmed / ಖಚಿತವಾಗಿದೆ'+keyHtml],
              UNPAID:['#991b1b','✖ Not accepted — advance not received / ಮುಂಗಡ ಬಂದಿಲ್ಲ'],CANCELLED:['#991b1b','✖ Cancelled / ರದ್ದಾಗಿದೆ']}[j.status]||['#334155',j.status];
-    out.innerHTML=`<b style="color:${m[0]}">${m[1]}</b><br/>${esc(j.scan)} · ${esc(j.date)} ${esc(j.slot)}`;
+    out.innerHTML=`<b style="color:${m[0]}">${m[1]}</b><br/>${esc(j.scan)} · ${esc(j.date)} ${esc(j.slot)}`+(j.status==='CONFIRMED'?'<br/>Balance at the clinic: UPI only / ಉಳಿದ ಮೊತ್ತ UPI ಮೂಲಕ ಮಾತ್ರ':'')+
+      (j.dayToken?`<div class="line-card" style="margin-top:8px">${dayTokHtml(j.dayToken,j.eta,j.nowToken,j.status)}</div>`:'');
   }catch(e){out.textContent='Could not check now. Call 7204764969.';}
 }
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
