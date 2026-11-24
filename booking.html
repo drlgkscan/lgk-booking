@@ -64,6 +64,8 @@ textarea{resize:vertical;min-height:70px}
 .sameday-alert .sd-title{font-size:15px;font-weight:700;color:#b45309;margin-bottom:6px}
 .line-card{background:#f0fdf4;border:2px solid #16a34a;border-radius:14px;padding:14px;margin-top:12px;text-align:center;color:#14532d;line-height:1.6}
 
+.hero .go br+span{display:inline-block;margin-top:2px}
+@media print{.toast{display:none!important}}
 .hero{background:linear-gradient(135deg,#065f46,#16a34a);color:#fff;border-radius:20px;padding:20px 18px;margin-bottom:14px;box-shadow:0 8px 24px rgba(6,95,70,.35);text-align:center}
 .hero h2{font-family:'Playfair Display',serif;font-size:23px;margin-bottom:2px}
 .hero .kn{font-size:14px;opacity:.95;font-weight:700}
@@ -452,10 +454,21 @@ function loadHero(){
     if(!li||li.open===undefined){h.style.display='none';return;}
     if(!li.open){
       h.className='hero closed';
-      const tm=li.tomorrow?new Date(li.tomorrow+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'}):'';
-      const why={DAY_FULL:"Today is full / ಇಂದು ತುಂಬಿದೆ",NOT_YET:`Today's tokens open at ${esc(li.openFromTxt||'6:00 AM')} / ${esc(li.openFromTxt||'6:00 AM')} ರಿಂದ`,
-                 OFF_TODAY:'No online tokens today / ಇಂದು ಆನ್‌ಲೈನ್ ಟೋಕನ್ ಇಲ್ಲ',CLOSED_TODAY:'Clinic closed today / ಇಂದು ರಜೆ'}[li.reason]||'No token right now / ಈಗ ಟೋಕನ್ ಇಲ್ಲ';
-      h.innerHTML=`<h2>${why}</h2>`+(tm?`<button class="go" onclick="pickTomorrow('${li.tomorrow}')">Book for ${esc(tm)} → / ನಾಳೆಗೆ ಬುಕ್ ಮಾಡಿ</button>`:'');
+      if(li.reason==='NOT_YET'){            // before 6 AM: today is coming, don't push patients to another day
+        h.innerHTML=`<h2>Today's tokens open at ${esc(li.openFromTxt||'6:00 AM')}</h2>
+          <div class="kn">ಇಂದಿನ ಟೋಕನ್ ಬೆಳಿಗ್ಗೆ ${esc(li.openFromTxt||'6:00 AM')} ರಿಂದ</div>
+          <div class="sub" style="margin-top:10px">Please open this page again after ${esc(li.openFromTxt||'6:00 AM')} to take today's token.<br/>
+          ಇಂದಿನ ಟೋಕನ್‌ಗಾಗಿ ${esc(li.openFromTxt||'6:00 AM')} ನಂತರ ಈ ಪುಟವನ್ನು ಮತ್ತೆ ತೆರೆಯಿರಿ.</div>
+          <span class="other" onclick="document.getElementById('step1').scrollIntoView({behavior:'smooth'})">Want another day? Book below ↓ / ಬೇರೆ ದಿನಕ್ಕೆ ಕೆಳಗೆ ಬುಕ್ ಮಾಡಿ</span>`;
+        return;
+      }
+      const nd=li.tomorrow?new Date(li.tomorrow+'T00:00:00'):null;
+      const tm=nd?nd.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'}):'';
+      const tmKn=nd?nd.toLocaleDateString('kn-IN',{weekday:'long',day:'numeric',month:'long'}):'';
+      const why={DAY_FULL:["Today's tokens are full","ಇಂದಿನ ಟೋಕನ್‌ಗಳು ಮುಗಿದಿವೆ"],OFF_TODAY:['No online tokens today','ಇಂದು ಆನ್‌ಲೈನ್ ಟೋಕನ್ ಇಲ್ಲ'],
+                 CLOSED_TODAY:['The clinic is closed today','ಇಂದು ಕ್ಲಿನಿಕ್ ರಜೆ']}[li.reason]||['No token right now','ಈಗ ಟೋಕನ್ ಇಲ್ಲ'];
+      h.innerHTML=`<h2>${why[0]}</h2><div class="kn">${why[1]}</div>`+
+        (tm?`<button class="go" onclick="pickTomorrow('${li.tomorrow}')">Book for ${esc(tm)} →<br/><span style="font-size:14px">ಬುಕ್ ಮಾಡಿ: ${esc(tmKn)}</span></button>`:'');
       return;
     }
     h.className='hero';
@@ -521,8 +534,9 @@ function lineClosedMsg(li){
              OFF_TODAY:'No same-day online tokens today.<br/>ಇಂದು ಆನ್‌ಲೈನ್ ಟೋಕನ್ ಇಲ್ಲ.',
              CLOSED_TODAY:'The clinic is closed today.<br/>ಇಂದು ಕ್ಲಿನಿಕ್ ರಜೆ.',
              CLOSED:'No same-day tokens right now.<br/>ಈಗ ಟೋಕನ್ ಇಲ್ಲ.'}[li&&li.reason]||'No same-day tokens right now.';
+  if(li&&li.reason==='NOT_YET') return `<div class="line-card closed"><div style="font-size:15px;font-weight:700">${why}</div><div style="margin-top:6px">Please come back after ${esc(li.openFromTxt||'6:00 AM')} for today's token, or pick another date above.<br/>ಇಂದಿನ ಟೋಕನ್‌ಗಾಗಿ ${esc(li.openFromTxt||'6:00 AM')} ನಂತರ ಬನ್ನಿ, ಅಥವಾ ಮೇಲೆ ಬೇರೆ ದಿನಾಂಕ ಆಯ್ಕೆ ಮಾಡಿ.</div></div>`;
   return `<div class="line-card closed"><div style="font-size:15px;font-weight:700">${why}</div>`+
-    (tm?`<button type="button" class="btn btn-p" style="margin-top:10px" onclick="pickDay('${li.tomorrow}')">Book for ${esc(tm)} → / ನಾಳೆಗೆ ಬುಕ್ ಮಾಡಿ</button>`:'')+`</div>`;
+    (tm?`<button type="button" class="btn btn-p" style="margin-top:10px" onclick="pickDay('${li.tomorrow}')">Book for ${esc(tm)} →</button>`:'')+`</div>`;
 }
 function pickDay(d){const fd=document.getElementById('f-date');fd.value=d;onDateChange();}
 function loadLine(){
